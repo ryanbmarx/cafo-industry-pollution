@@ -1,0 +1,39 @@
+{# Override the `container` block to disable default layout. #}
+{% block container %}
+{% block content %}
+<!-- 
+  #############################################
+  ### WAIT! DO NOT EDIT HERE!
+  ### EDIT IN THE SPREADSHEET!
+  #############################################
+-->
+<div id="map"></div>
+
+{% endblock content %}
+{% endblock container %}
+
+{% block library_scripts %}
+<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//{{ ROOT_URL }}/js/leaflet.js"></script>
+<script> var data_root_url = "//{{ ROOT_URL }}/data/";</script>
+<script src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
+<script src="//{{ ROOT_URL }}/js/app.min.js"></script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function(document) {
+  var CSS = [
+	"//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
+    "//{{ ROOT_URL }}/css/leaflet.css",
+    "//{{ ROOT_URL }}/css/styles.css"
+  ];    
+  CSS.forEach(function(url) {
+    var link = document.createElement('link');
+    link.setAttribute('rel', 'stylesheet');
+    link.setAttribute('href', url);
+    document.head.appendChild(link);
+  });
+})(document);    
+</script>
+{% endblock scripts %}
