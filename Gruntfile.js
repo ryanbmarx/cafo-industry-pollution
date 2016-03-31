@@ -15,12 +15,12 @@ module.exports = function(grunt) {
   };
 
   config.minifyify = {
-    browserifyOptions: {
-      debug: true,
-      transform: [
-        'browserify-shim'          
-      ]
-    },
+    // browserifyOptions: {
+    //   debug: true,
+    //   transform: [
+    //     'browserify-shim'          
+    //   ]
+    // },
     app: {
       minifyifyOptions: {
         map: 'app.min.js.map'
