@@ -8,12 +8,13 @@
   #############################################
 -->
 <div id="map"></div>
-
+<small>Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.</small>
 {% endblock content %}
 {% endblock container %}
 
 {% block library_scripts %}
 <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
 <script src="//{{ ROOT_URL }}/js/leaflet.js"></script>
 <script> var data_root_url = "//{{ ROOT_URL }}/data/";</script>
 <script src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
