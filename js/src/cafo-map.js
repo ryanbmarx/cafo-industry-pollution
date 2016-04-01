@@ -3,39 +3,48 @@ var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
 
-function getCountyOpacity(d, attribute) {
-	// This function will return the proper colors for the choropleth. 
-	// The `attribute` argument is used in case I want to wire up other 
-	// attributes which would need a bespoke set of buckets.
-	
-	var baseOpacity = 1;
+function getCountyOpacity(d, attribute, scale) {
 
-	// ## GLOSSARY
-	// "hog_farms_1000" = Number of farms with 1,000 or more hogs
+	/*
+		d = datum
+		attribute = the property being depicted on the map
+		scale = the appropriate scale for the attribute from the scales object
+	*/
 
-	if (attribute == "hogs_data_FARM_1000"){
-		return 	d > 10000 	? 	baseOpacity :
-				d > 13		? 	baseOpacity * .5 :
-				d > 4  		? 	baseOpacity * .25 :
-				d > 2  		? 	baseOpacity * .1 :
-								'0';
-	} else if (attribute == "hogs_data_HOGS_1000"){
-		return 	d > 200000 	? 	baseOpacity :
-								'0';
-	} else{
-		return .5;
-	}
+	console.log(d, attribute, scale(d));
+	return scale(d);
 }
 
 function getScales(counties) {
-  var scales = {};
+	// Counties is the entire geoJSON dataset.
 
-  // TODO: populate scales
+	// These are the available datasets (each is a domain)
+	let dataSets=[
+		"hogs_data_FARM_1000",
+		"hogs_data_HOGS_1000",
+		"hogs_data_SALES_ALL",
+		"hogs_data_NUMBER_12",
+		"hogs_data_DOLLARS_12",
+		"hogs_data_FERT_ACRES",
+		"hogs_data_MANURE_ACRES",
+		"hogs_data_CORN_ACREA",
+		"hogs_data_CORN_BUSHELS",
+		"hogs_data_WORKERS"
+	];
 
-  return scales;
+	// These are the desired opacities (the desired range)
+	let opacities = [0, .25, .5, .75, .95];
+
+	// This object will hold the scales
+	let scales = {};
+
+	dataSets.forEach( dataSet => {
+		scales[dataSet] = d3.scale.quantile()
+			.domain(counties.map(county => county.properties[dataSet] || 0 ))
+			.range(opacities);	
+	});
+	return scales;
 }
-
-
 
 var CafoMap = function(options){
 	var app = this;
@@ -59,6 +68,7 @@ var CafoMap = function(options){
 	// Or just use straight-up XHR
 	$.getJSON( options.dataRootUrl + "hogs_data.geojson", function(data){
 		app.scales = getScales(data.features);
+		console.log(app.scales.hogs_data_FARM_1000.domain());
 		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
