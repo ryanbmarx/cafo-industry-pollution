@@ -36,7 +36,8 @@ module.exports = function(grunt) {
     },
     app: {
       browserifyOptions:{
-        external: vendorPackages
+        external: vendorPackages,
+        standalone: 'CafoMap'
       },
       minifyifyOptions: {
         map: 'app.min.js.map'
