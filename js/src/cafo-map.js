@@ -84,7 +84,7 @@ CafoMap.prototype.styleCounties = function(feature){
     };
 }
 
-CafoMap.prototype.updateCountyFill = function(property){
+CafoMap.prototype.updateMapData = function(property){
 	// This method is to be used when switching data sets for the chorpleth
 	var app = this;
 	app._propertyToMap = property;
