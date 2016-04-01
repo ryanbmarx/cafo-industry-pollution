@@ -1,5 +1,15 @@
+/*
+
+##TO DO
+- Remove jquery from button class toggles
+- Make legend renderer
+
+
+*/
 var $ = require('jquery');
 var L = require('leaflet');
+require('./stamen-tiles');
+var d3 = require('d3');
 
 function getCountyOpacity(d, attribute) {
 	// This function will return the proper colors for the choropleth. 
@@ -36,12 +46,15 @@ var CafoMap = function(options){
         }
 	);
 
+
+
 	// Add the fricking cool map tiles
 	var layer = new L.StamenTileLayer("toner");
 	map.addLayer(layer);
 
 	// Lay the choropleth
 	$.getJSON( data_root_url + "hogs_data.geojson", function(data){
+	
 		app.countyLayer = L.geoJson(data, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
@@ -51,7 +64,6 @@ var CafoMap = function(options){
 
 CafoMap.prototype.styleCounties = function(feature){
 	var app = this;
-	// console.log(getCountyOpacity(feature["properties"][app.options.propertyToMap], app.options.propertyToMap));
     return {
         fillColor: app.options.countyFillColor,
         weight: 1,
@@ -72,6 +84,9 @@ CafoMap.prototype.updateCountyFill = function(property){
 
 }
 
+// TODO: Initialize applicaton object in _content.html
+// TODO: Find way around accessing global map object
+
 var updateMap = function(property, button){
 	// This is the main updating function
     // Property argument is the data to be applied to map
@@ -79,9 +94,6 @@ var updateMap = function(property, button){
     window.CafoMap.updateCountyFill(property);
     $('.map-button.active').removeClass('active');
     $(button).addClass('active');
-    
-
-
 }
 
 window.onload = function(){
@@ -95,11 +107,11 @@ window.onload = function(){
  	 // Let's add some click handlers to the buttons
 	window.mapButtons = document.getElementsByClassName('map-button');
  	 for (var i = 0; i < mapButtons.length; i++){
- 	 	mapButtons[i].addEventListener('click', function(){
- 	 		console.log(this);
+ 	 	mapButtons[i].addEventListener('click', function(e){
+ 	 		e.preventDefault();
 			var targetData = this.dataset.feature;
 			updateMap(targetData, this);
- 	 	}, false);
+ 	 	}, {passive:true});
  	 }
 
  	 

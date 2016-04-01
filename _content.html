@@ -7,23 +7,37 @@
   ### EDIT IN THE SPREADSHEET!
   #############################################
 -->
-<div id="map"></div>
-<small>Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.</small>
+{{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
+
+<div class='row'>
+	<div class='four columns'>
+		{% include "_map_buttons.html" %}
+	</div>
+	<div class='eight columns'>
+		<div id="map"></div>
+	</div>
+</div>
+
+<section class='credits'>
+	<p>{{ sources }}</p>
+</section>
+<!-- <small>Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.</small> -->
 {% endblock content %}
 {% endblock container %}
 
 {% block library_scripts %}
-<script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-<script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-<script src="//{{ ROOT_URL }}/js/leaflet.js"></script>
-<script> var data_root_url = "//{{ ROOT_URL }}/data/";</script>
-<script src="http://maps.stamen.com/js/tile.stamen.js?v1.3.0"></script>
-<script src="//{{ ROOT_URL }}/js/app.min.js"></script>
+<script src="//{{ ROOT_URL }}/js/vendor.min.js"></script>
 {% endblock %}
 
 {% block scripts %}
+<script> 
+  // TODO: Pass this as argument to application object, sted using global variable 
+  var data_root_url = "//{{ ROOT_URL }}/data/";
+</script>
+<script src="//{{ ROOT_URL }}/js/app.min.js"></script>
 <script>
 (function(document) {
+  // TODO: Bundle vendor CSS into a single file 
   var CSS = [
 	"//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
     "//{{ ROOT_URL }}/css/leaflet.css",

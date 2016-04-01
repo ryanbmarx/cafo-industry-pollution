@@ -14,14 +14,30 @@ module.exports = function(grunt) {
     }
   };
 
+  var vendorPackages = [
+    'd3', 
+    'leaflet',
+    'jquery'
+  ];
+
   config.minifyify = {
-    // browserifyOptions: {
-    //   debug: true,
-    //   transform: [
-    //     'browserify-shim'          
-    //   ]
-    // },
+    vendor:{
+      minifyifyOptions:{
+        map: 'vendor.min.js.map'
+      },
+      browserifyOptions:{
+        require: vendorPackages
+      },
+      dest: {
+        buildFile: './js/vendor.min.js',
+        mapFile: './js/vendor.min.js.map'
+      }
+
+    },
     app: {
+      browserifyOptions:{
+        external: vendorPackages
+      },
       minifyifyOptions: {
         map: 'app.min.js.map'
       },
@@ -32,8 +48,6 @@ module.exports = function(grunt) {
       }
     }
   };
-  
-
   
   config.sass = {
     options: {
