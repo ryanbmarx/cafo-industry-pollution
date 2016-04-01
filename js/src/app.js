@@ -35,9 +35,21 @@ function getCountyOpacity(d, attribute) {
 	}
 }
 
+function getScales(counties) {
+  var scales = {};
+
+  // TODO: populate scales
+
+  return scales;
+}
+
+
+
 var CafoMap = function(options){
 	var app = this;
 	app.options = options;
+	app._propertyToMap = app.options.propertyToMap;
+	
 	//Make a new map
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
         {
@@ -50,12 +62,11 @@ var CafoMap = function(options){
 	var layer = new L.StamenTileLayer("toner");
 	map.addLayer(layer);
 
-
-
 	// Lay the choropleth
 	// TODO: Use fetch polyfill to do JSON request instead of jQuery.
 	// Or just use straight-up XHR
 	$.getJSON( options.dataRootUrl + "hogs_data.geojson", function(data){
+		app.scales = getScales(data.features);
 		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
@@ -70,14 +81,18 @@ CafoMap.prototype.styleCounties = function(feature){
         weight: 1,
         opacity: 1,
         color: 'white',
-        fillOpacity: getCountyOpacity(feature["properties"][app.options.propertyToMap], app.options.propertyToMap)
+        fillOpacity: getCountyOpacity(
+        	feature["properties"][app._propertyToMap],
+        	app._propertyToMap,
+        	app.scales[app._propertyToMap]
+        )
     };
 }
 
 CafoMap.prototype.updateCountyFill = function(property){
 	// This method is to be used when switching data sets for the chorpleth
 	var app = this;
-	app.options.propertyToMap = property;
+	app._propertyToMap = property;
 	app.countyLayer.eachLayer(function(layer){
 		app.countyLayer.resetStyle(layer);
 	});
