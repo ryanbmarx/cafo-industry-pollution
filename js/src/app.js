@@ -1,16 +1,12 @@
 /*
 
 ##TO DO
-- Remove jquery from button class toggles
 - Make legend renderer
-
+- Make scales
 
 */
 
-var CafoMap = require('./cafo-map');
-var CafoMapButtons = require('./cafo-map-buttons');
-
-
-
-window.CafoMap = CafoMap;
-window.CafoMapButtons = CafoMapButtons;
+module.exports = {
+	CafoMap:require('./cafo-map'),
+	CafoMapButtons:require('./cafo-map-buttons')
+};
