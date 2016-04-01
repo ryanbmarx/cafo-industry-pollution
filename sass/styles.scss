@@ -6,7 +6,13 @@
 	font-size:$size;
 }
 
+
+
 $highlight_color:$trib_orange;
+
+@import "legends_and_keys";
+
+
 
 #map{
 	height:600px;
@@ -59,4 +65,9 @@ $highlight_color:$trib_orange;
 .label{
 	@include sans-serif-text(14px);
 	font-weight:bold;
+}
+
+#legend-container{
+	padding: 10px 0;
+	background-color:#eee;
 }
