@@ -1,5 +1,9 @@
+<h2 class='label'>Toggle the choropleth data</h2>
 <nav class='map-nav'>
-<a href="#" class='button map-button active' data-feature="hogs_data_FARM_1000">Number of farms with 1,000 or more hogs</a>
-<a href="#" class='button map-button' data-feature="hogs_data_HOGS_1000">Hogs and pigs sold by these 1,000 plus farms</a>
-<a href="#" class='button map-button' data-feature="hogs_data_DOLLARS_12">(SALES)Hogs and pigs sold in dollars ($1,000) 2012</a>
+{% for row in buttons %}
+	<a href="#" class='button map-button' data-feature="hogs_data_{{ row.data_att }}">
+		{{ row.label }}<br />
+		<small>(<strong>Key:</strong> hogs_data_{{ row.data_att }})</small>
+	</a>
+{% endfor %}
 </nav>
