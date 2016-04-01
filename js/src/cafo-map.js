@@ -3,7 +3,15 @@ var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
 
-
+function hexToRgb(hex) {
+	// Found here: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
 
 
 function getScales(counties) {
@@ -97,22 +105,29 @@ CafoMap.prototype.renderLegend = function(property){
 		sublabel = app.options.dataLabelLookup[property].secondary,
 		mapRange = app.scales[property].range(),
 		opacitiesText = "",
-		backgroundFill = app.options.countyFillColor,
+		backgroundFill = hexToRgb(app.options.countyFillColor),
 		thresholds = app.scales[property].quantiles(),
 		thresholdText = "";
-
 
 		for (var i=0;i<mapRange.length;i++){
 			if (thresholds[i] == undefined){
 				// TODO: Format and style these figures.
 				thresholdText = "More than " + thresholds[i-1];
+			} else if ( i === 0){
+				// TODO: Format and style these figures.
+				thresholdText = "0 to " + thresholds[i];
 			} else {
 				// TODO: Format and style these figures.
 				thresholdText = thresholds[i-1] + " to " + thresholds[i];
 			}
 			opacitiesText += `
 				<dt>
-					<span class='box' style='background:${backgroundFill};opacity:${mapRange[i]};'></span>
+					<span class='box' style='background:rgba(
+					${backgroundFill.r},
+					${backgroundFill.g},
+					${backgroundFill.b},
+					${mapRange[i]}
+					);'></span>
 				</dt>
 				<dd>
 					${thresholdText}
