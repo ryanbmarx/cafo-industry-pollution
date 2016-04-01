@@ -46,16 +46,17 @@ var CafoMap = function(options){
         }
 	);
 
-
-
 	// Add the fricking cool map tiles
 	var layer = new L.StamenTileLayer("toner");
 	map.addLayer(layer);
 
+
+
 	// Lay the choropleth
-	$.getJSON( data_root_url + "hogs_data.geojson", function(data){
-	
-		app.countyLayer = L.geoJson(data, {
+	// TODO: Use fetch polyfill to do JSON request instead of jQuery.
+	// Or just use straight-up XHR
+	$.getJSON( options.dataRootUrl + "hogs_data.geojson", function(data){
+		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
 	});
@@ -80,42 +81,24 @@ CafoMap.prototype.updateCountyFill = function(property){
 	app.countyLayer.eachLayer(function(layer){
 		app.countyLayer.resetStyle(layer);
 	});
-
-
 }
 
-// TODO: Initialize applicaton object in _content.html
-// TODO: Find way around accessing global map object
-
-var updateMap = function(property, button){
-	// This is the main updating function
-    // Property argument is the data to be applied to map
-    // Button argument is the button needing the active class
-    window.CafoMap.updateCountyFill(property);
-    $('.map-button.active').removeClass('active');
-    $(button).addClass('active');
-}
-
-window.onload = function(){
-     window.CafoMap = new CafoMap({
-    	/*Options here*/
-    	mapTargetID:"map",
-    	propertyToMap:"hogs_data_FARM_1000",
-    	countyFillColor:"orange"
- 	 });
-
- 	 // Let's add some click handlers to the buttons
-	window.mapButtons = document.getElementsByClassName('map-button');
- 	 for (var i = 0; i < mapButtons.length; i++){
- 	 	mapButtons[i].addEventListener('click', function(e){
+var CafoMapButtons = function(options){
+	// Bind click handlers to button elements
+	var forEach = Array.prototype.forEach;
+	forEach.call(options.buttons, button => {
+		button.addEventListener('click', function(e){
  	 		e.preventDefault();
-			var targetData = this.dataset.feature;
-			updateMap(targetData, this);
- 	 	}, {passive:true});
- 	 }
+ 	 		// update choropleth map base on selected button/data- attribute
+			options.map.updateCountyFill(this.dataset.feature);
+			forEach.call(options.buttons, button => {
+				button.classList.remove('active');
+			});
+			this.classList.add('active');
+ 	 	}, false);
+	});
+};
 
- 	 
 
-}
-
-// window.cafoMap = cafoMap;
+window.CafoMap = CafoMap;
+window.CafoMapButtons = CafoMapButtons;

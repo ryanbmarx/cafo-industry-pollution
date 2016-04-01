@@ -30,13 +30,9 @@
 {% endblock %}
 
 {% block scripts %}
-<script> 
-  // TODO: Pass this as argument to application object, sted using global variable 
-  var data_root_url = "//{{ ROOT_URL }}/data/";
-</script>
 <script src="//{{ ROOT_URL }}/js/app.min.js"></script>
 <script>
-(function(document) {
+(function(window, document) {
   // TODO: Bundle vendor CSS into a single file 
   var CSS = [
 	"//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
@@ -49,6 +45,21 @@
     link.setAttribute('href', url);
     document.head.appendChild(link);
   });
-})(document);    
+
+  window.onload = function(){
+    var map = new CafoMap({
+        /*Options here*/
+        mapTargetID:"map",
+        dataRootUrl: "//{{ ROOT_URL }}/data/",
+        propertyToMap:"hogs_data_FARM_1000",
+        countyFillColor:"orange"
+     });
+
+    var mapButtons = new CafoMapButtons({
+      buttons:document.getElementsByClassName('map-button'),
+      map:map
+    });
+  };
+})(window, document);    
 </script>
 {% endblock scripts %}
