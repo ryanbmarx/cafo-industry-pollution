@@ -3,9 +3,7 @@ var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
 
-function renderLegend(scale){
-	console.log('rendering new legend');
-}
+
 
 
 function getScales(counties) {
@@ -26,7 +24,7 @@ function getScales(counties) {
 	];
 
 	// These are the desired opacities (the desired range)
-	let opacities = [0, .25, .5, .75, .95];
+	let opacities = [0, .25, .39, .5, .95];
 
 	// This object will hold the scales
 	let scales = {};
@@ -43,7 +41,6 @@ var CafoMap = function(options){
 	var app = this;
 	app.options = options;
 	app._propertyToMap = app.options.propertyToMap;
-	
 	//Make a new map
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
         {
@@ -61,7 +58,6 @@ var CafoMap = function(options){
 	// Or just use straight-up XHR
 	$.getJSON( options.dataRootUrl + "hogs_data.geojson", function(data){
 		app.scales = getScales(data.features);
-		console.log(app.scales.hogs_data_FARM_1000.domain());
 		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
@@ -91,6 +87,48 @@ CafoMap.prototype.updateMapData = function(property){
 	app.countyLayer.eachLayer(function(layer){
 		app.countyLayer.resetStyle(layer);
 	});
+	app.renderLegend(app._propertyToMap);
+}
+
+CafoMap.prototype.renderLegend = function(property){
+	var app = this;
+	console.log(app.scales[property].quantiles());
+	var label = app.options.dataLabelLookup[property].primary,
+		sublabel = app.options.dataLabelLookup[property].secondary,
+		mapRange = app.scales[property].range(),
+		opacitiesText = "",
+		backgroundFill = app.options.countyFillColor,
+		thresholds = app.scales[property].quantiles(),
+		thresholdText = "";
+
+
+		for (var i=0;i<mapRange.length;i++){
+			if (thresholds[i] == undefined){
+				// TODO: Format and style these figures.
+				thresholdText = "More than " + thresholds[i-1];
+			} else {
+				// TODO: Format and style these figures.
+				thresholdText = thresholds[i-1] + " to " + thresholds[i];
+			}
+			opacitiesText += `
+				<dt>
+					<span class='box' style='background:${backgroundFill};opacity:${mapRange[i]};'></span>
+				</dt>
+				<dd>
+					${thresholdText}
+				</dd>
+			`;
+		}
+	var legendOutput = `
+		<div class='legend'>
+			<h4 class='label'>${label}</h4>
+			<h5 class='sublabel'>${sublabel}</h5>
+			<dl>${opacitiesText}</dl>
+		</div>
+	`;
+
+	console.log(legendOutput);
+	app.options.legendContainer.innerHTML = legendOutput;
 }
 
 module.exports = CafoMap;
