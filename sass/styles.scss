@@ -15,11 +15,11 @@ $highlight_color:$trib_orange;
 }
 
 .trb_mainContent .button{
-	@include sans-serif-text(12px);
+	@include sans-serif-text(10px);
 	color:black;
 	display: block;
 	margin: 10px 0;
-	padding:15px;
+	padding:15px 0;
 	background-color:#eee;
 	text-align: center; 
 	cursor:pointer;
@@ -45,4 +45,18 @@ $highlight_color:$trib_orange;
 		opacity: .8;
 		color:black;
 	}
+}
+
+.map-nav{
+	display:flex;
+	justify-content:space-between;
+	flex-wrap:wrap;
+	.button{
+		width:48%;
+	}
+}
+
+.label{
+	@include sans-serif-text(14px);
+	font-weight:bold;
 }
