@@ -47,7 +47,7 @@
   });
 
   window.onload = function(){
-    var map = new CafoMap({
+    var map = new CafoMap.CafoMap({
         /*Options here*/
         mapTargetID:"map",
         dataRootUrl: "//{{ ROOT_URL }}/data/",
@@ -55,7 +55,7 @@
         countyFillColor:"orange"
      });
 
-    var mapButtons = new CafoMapButtons({
+    var mapButtons = new CafoMap.CafoMapButtons({
       buttons:document.getElementsByClassName('map-button'),
       map:map
     });
