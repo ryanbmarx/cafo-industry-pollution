@@ -3,17 +3,10 @@ var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
 
-function getCountyOpacity(d, attribute, scale) {
-
-	/*
-		d = datum
-		attribute = the property being depicted on the map
-		scale = the appropriate scale for the attribute from the scales object
-	*/
-
-	console.log(d, attribute, scale(d));
-	return scale(d);
+function renderLegend(scale){
+	console.log('rendering new legend');
 }
+
 
 function getScales(counties) {
 	// Counties is the entire geoJSON dataset.
@@ -78,16 +71,16 @@ var CafoMap = function(options){
 
 CafoMap.prototype.styleCounties = function(feature){
 	var app = this;
+
+	let scale = app.scales[app._propertyToMap];
+	let datum = feature["properties"][app._propertyToMap]
+
     return {
         fillColor: app.options.countyFillColor,
         weight: 1,
         opacity: 1,
         color: 'white',
-        fillOpacity: getCountyOpacity(
-        	feature["properties"][app._propertyToMap],
-        	app._propertyToMap,
-        	app.scales[app._propertyToMap]
-        )
+        fillOpacity: scale(datum)
     };
 }
 
