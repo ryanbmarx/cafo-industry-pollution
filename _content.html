@@ -11,6 +11,7 @@
 
 <div class='row'>
 	<div class='four columns'>
+    <div id='legend-container' class='key'>XX2342342X</div>
 		{% include "_map_buttons.html" %}
 	</div>
 	<div class='eight columns'>
@@ -45,14 +46,23 @@
     link.setAttribute('href', url);
     document.head.appendChild(link);
   });
-
+  var dataLabels = {
+    {% for row in buttons %}
+      hogs_data_{{ row.data_att }}: {
+        primary: "{{ row.label }}",
+        secondary:"{{ row.secondary_label }}"
+      }{% if not loop.last %}, {% endif %}
+    {% endfor %}
+  };
   window.onload = function(){
     var map = new CafoMap.CafoMap({
         /*Options here*/
         mapTargetID:"map",
         dataRootUrl: "//{{ ROOT_URL }}/data/",
         propertyToMap:"hogs_data_FARM_1000",
-        countyFillColor:"orange"
+        countyFillColor:"#FF0000",
+        legendContainer:document.getElementById('legend-container'),
+        dataLabelLookup:dataLabels
      });
 
     var mapButtons = new CafoMap.CafoMapButtons({
