@@ -6,10 +6,6 @@
 	font-size:$size;
 }
 
-.profile-marker{
-	fill:yellow !important;
-}
-
 $highlight_color:$trib_orange;
 
 @import "legends_and_keys";
@@ -78,6 +74,13 @@ $highlight_color:$trib_orange;
 	height:1px;
 	background:$trib_light_gray;
 	margin:10px 0;
+}
+
+.profile-marker{
+	
+	&:hover{
+		fill:$trib_orange;
+	}
 }
 
 .trb_mainContent #profile-container p{
