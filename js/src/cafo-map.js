@@ -76,28 +76,37 @@ var CafoMap = function(options){
 			var pointsData = data.profiles;
 			app.profileData = data.profiles;
 
+			// This layer group will let me iterate over markers and style them.
+			var markers = L.layerGroup();
+
 			pointsData.forEach( point => {
 				// The first row of points data actually is labels/descriptions from
 				// spreadsheet. This uses the lat and tests if it is a number. If it is,
 				// then add point. If it isn't, then skip (b/c it is probably label). 
 				// Also, check for the publish boolean in the JSON. Don't publish except when it's true.
 				if (!isNaN(parseFloat(point.lat)) && point.publish == true){
-					// L.circleMarker({ lat:parseFloat(point.lat), lng:parseFloat(point.lng)}, app.stylePollutionEvents.bind(app))
 					let marker = L.circleMarker(
 						{lat:parseFloat(point.lat), lng:parseFloat(point.lng)},
 						app.stylePollutionEvents(app)
 						).on('click', function(e){
-							app.showPollutionProfile(e);
+							markers.eachLayer(marker => {
+								marker.setStyle(app.stylePollutionEvents(app));
+							});
+							e.target.setStyle(app.styleActivePollutionEvents(app))
+							// clickHandler(e, app);
 						});
 						marker.profileId = point.id;
-						marker.addTo(map);
+						marker.addTo(markers);
 				}
 			});
+			markers.addTo(map);
+
 		});	
 	});		
 }
 
 CafoMap.prototype.showPollutionProfile = function(e){
+
 	var app = this;
 	let profileContainer = app.options.profileOptions.profileContainer;
 	// Take the profile data (array of objects) and filter
@@ -144,6 +153,31 @@ CafoMap.prototype.stylePollutionEvents = function(feature){
 		opacity: 1,
 		color: options.strokeColor,
 		fillColor: options.fillColor,
+		fillOpacity: options.fillOpacity,
+		className:'profile-marker',
+		radius:options.radius
+	};
+}
+
+var clickHandler = function(e){
+	console.log('handling clicks');
+	var app = this;
+	// var icons = document.getElementsByClassName('profile-marker');
+	// app.showPollutionProfile(e);
+	// e.target.setStyle(app.styleActivePollutionEvents(app));
+
+
+}
+
+CafoMap.prototype.styleActivePollutionEvents = function(feature){
+	var app = this;
+	let options = app.options.profileOptions;
+	// TODO: Figure out why the danged circles are yellow.
+	return {
+		weight: options.active.strokeWidth,
+		opacity: 1,
+		color: options.strokeColor,
+		fillColor: options.active.fillColor,
 		fillOpacity: options.fillOpacity,
 		className:'profile-marker',
 		radius:options.radius
