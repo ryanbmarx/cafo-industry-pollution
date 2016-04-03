@@ -7,88 +7,87 @@
   ### EDIT IN THE SPREADSHEET!
   #############################################
 -->
-{{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
 <div class='row'>
-  <div class='four columns'>
-    <div id='legend-container' class='key'>XX2342342X</div>
-  </div>
   <div class='eight columns'>
     {% include "_map_buttons.html" %}
   </div>
+  <div class='four columns'>
+    <div id='legend-container' class='key'>XX2342342X</div>
+  </div>
 </div>
 <div class='row'>
-	<div class='four columns'>
-    <div id="profile-container" class=''>{{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
+  <div class='eight columns'>
+    <div id="map"></div>
+  </div>
+  <div class='four columns'>
+    <div id="profile-container" class=''><p><strong>This is the well-written, concise, and precisely edited main intro.</strong></p> {{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
+    </div>
+  </div>
 </div>
-	</div>
-	<div class='eight columns'>
-		<div id="map"></div>
-	</div>
-</div>
+  <section class='credits'>
+   <p>{{ sources }}</p>
+ </section>
+ {% endblock content %}
+ {% endblock container %}
 
-<section class='credits'>
-	<p>{{ sources }}</p>
-</section>
-{% endblock content %}
-{% endblock container %}
+ {% block library_scripts %}
+ <script src="//{{ ROOT_URL }}/js/vendor.min.js"></script>
+ {% endblock %}
 
-{% block library_scripts %}
-<script src="//{{ ROOT_URL }}/js/vendor.min.js"></script>
-{% endblock %}
-
-{% block scripts %}
-<script src="//{{ ROOT_URL }}/js/app.min.js"></script>
-<script>
-(function(window, document) {
-  /*  TODO: Bundle vendor CSS into a single file */
-  var CSS = [
-	"//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
+ {% block scripts %}
+ <script src="//{{ ROOT_URL }}/js/app.min.js"></script>
+ <script>
+  (function(window, document) {
+    /*  TODO: Bundle vendor CSS into a single file */
+    var CSS = [
+    "//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
     "//{{ ROOT_URL }}/css/leaflet.css",
     "//{{ ROOT_URL }}/css/styles.css"
-  ];    
-  CSS.forEach(function(url) {
-    var link = document.createElement('link');
-    link.setAttribute('rel', 'stylesheet');
-    link.setAttribute('href', url);
-    document.head.appendChild(link);
-  });
+    ];    
+    CSS.forEach(function(url) {
+      var link = document.createElement('link');
+      link.setAttribute('rel', 'stylesheet');
+      link.setAttribute('href', url);
+      document.head.appendChild(link);
+    });
 
- 
+
   /* 
   This little lookup table provides the labels and sublabels for the choropleth data.
   */
- 
+
   var dataLabels = {
     {% for row in buttons %}
-      hogs_data_{{ row.data_att }}: {
-        primary: "{{ row.label }}",
-        secondary:"{{ row.secondary_label }}",
-        type:"{{ row.data_type }}"
-      }{% if not loop.last %}, {% endif %}
+    hogs_data_{{ row.data_att }}: {
+      primary: "{{ row.label }}",
+      secondary:"{{ row.secondary_label }}",
+      type:"{{ row.data_type }}"
+    }{% if not loop.last %}, {% endif %}
     {% endfor %}
   };
-
   window.onload = function(){
     /* Build the actual map here */
     var map = new CafoMap.CafoMap({
-        mapTargetID:"map",
-        dataRootUrl: "//{{ ROOT_URL }}/data/",
-        propertyToMap:"hogs_data_FARM_1000",
-        legendContainer:document.getElementById('legend-container'),
-        dataLabelLookup:dataLabels,
-        countyOptions:{
-          fillColor:"#FF0000",
-        },
-        profileOptions: {
-          /* Dot styles here */
-          strokeWidth:1,
-          strokeColor:'black',
-          fillColor: '#000000',
-          fillOpacity: .8,
-          radius:5,
-          label:"One pollution event"
-        }
-     });
+      mapTargetID:"map",
+      dataRootUrl: "//{{ ROOT_URL }}/data/",
+      propertyToMap:"hogs_data_FARM_1000",
+      legendContainer:document.getElementById('legend-container'),
+      dataLabelLookup:dataLabels,
+      countyOptions:{
+        fillColor:"#FF0000",
+      },
+      profileOptions: {
+        /* Dot styles here */
+        strokeWidth:1,
+        strokeColor:'black',
+        fill:true,
+        fillColor: '#000000',
+        fillOpacity: .8,
+        radius:5,
+        label:"One pollution event",
+        profileContainer:document.getElementById('profile-container')
+      }
+    });
 
     /* Build the map buttons here */
     var mapButtons = new CafoMap.CafoMapButtons({
