@@ -8,11 +8,18 @@
   #############################################
 -->
 {{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
-
+<div class='row'>
+  <div class='four columns'>
+    <div id='legend-container' class='key'>XX2342342X</div>
+  </div>
+  <div class='eight columns'>
+    {% include "_map_buttons.html" %}
+  </div>
+</div>
 <div class='row'>
 	<div class='four columns'>
-    <div id='legend-container' class='key'>XX2342342X</div>
-		{% include "_map_buttons.html" %}
+    <div id="profile-container" class=''>{{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
+</div>
 	</div>
 	<div class='eight columns'>
 		<div id="map"></div>
@@ -22,7 +29,6 @@
 <section class='credits'>
 	<p>{{ sources }}</p>
 </section>
-<!-- <small>Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.</small> -->
 {% endblock content %}
 {% endblock container %}
 
@@ -34,7 +40,7 @@
 <script src="//{{ ROOT_URL }}/js/app.min.js"></script>
 <script>
 (function(window, document) {
-  // TODO: Bundle vendor CSS into a single file 
+  /*  TODO: Bundle vendor CSS into a single file */
   var CSS = [
 	"//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
     "//{{ ROOT_URL }}/css/leaflet.css",
@@ -46,6 +52,12 @@
     link.setAttribute('href', url);
     document.head.appendChild(link);
   });
+
+ 
+  /* 
+  This little lookup table provides the labels and sublabels for the choropleth data.
+  */
+ 
   var dataLabels = {
     {% for row in buttons %}
       hogs_data_{{ row.data_att }}: {
@@ -54,17 +66,30 @@
       }{% if not loop.last %}, {% endif %}
     {% endfor %}
   };
+
   window.onload = function(){
+    /* Build the actual map here */
     var map = new CafoMap.CafoMap({
-        /*Options here*/
         mapTargetID:"map",
         dataRootUrl: "//{{ ROOT_URL }}/data/",
         propertyToMap:"hogs_data_FARM_1000",
-        countyFillColor:"#FF0000",
         legendContainer:document.getElementById('legend-container'),
-        dataLabelLookup:dataLabels
+        dataLabelLookup:dataLabels,
+        countyOptions:{
+          fillColor:"#FF0000",
+        },
+        profileOptions: {
+          /* Dot styles here */
+          strokeWidth:1,
+          strokeColor:'black',
+          fillColor: '#000000',
+          fillOpacity: .8,
+          radius:5,
+          profilesLabel:"One pollution event"
+        }
      });
 
+    /* Build the map buttons here */
     var mapButtons = new CafoMap.CafoMapButtons({
       buttons:document.getElementsByClassName('map-button'),
       map:map
