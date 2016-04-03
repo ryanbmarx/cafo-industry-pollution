@@ -89,6 +89,7 @@ var CafoMap = function(options){
 						{lat:parseFloat(point.lat), lng:parseFloat(point.lng)},
 						app.stylePollutionEvents(app)
 						).on('click', function(e){
+							app.showPollutionProfile(e);
 							markers.eachLayer(marker => {
 								marker.setStyle(app.stylePollutionEvents(app));
 							});
@@ -163,7 +164,6 @@ var clickHandler = function(e){
 	console.log('handling clicks');
 	var app = this;
 	// var icons = document.getElementsByClassName('profile-marker');
-	// app.showPollutionProfile(e);
 	// e.target.setStyle(app.styleActivePollutionEvents(app));
 
 
