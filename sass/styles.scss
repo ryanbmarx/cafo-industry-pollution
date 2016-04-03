@@ -6,7 +6,9 @@
 	font-size:$size;
 }
 
-
+.profile-marker{
+	fill:yellow !important;
+}
 
 $highlight_color:$trib_orange;
 
@@ -20,47 +22,46 @@ $highlight_color:$trib_orange;
 
 }
 
-.trb_mainContent .button{
-	@include sans-serif-text(10px);
-	color:black;
-	display: block;
-	margin: 10px 0;
-	padding:15px 0;
-	background-color:#eee;
-	text-align: center; 
-	cursor:pointer;
-	color:black;
-	transition:all 150ms;
-	
-	&:first-child{
-		border-radius: 5px 5px 0 0;
-	}
-
-	&:last-child{
-		border-radius: 0 0 5px 5px;
-	}
-
-	&.active, &.active:hover{
-		background-color:$highlight_color;
-		font-weight: bold;
-		color:white;
-		transition:all 150ms;
-	}
-
-	&:hover{
-		opacity: .8;
-		color:black;
-	}
-}
-
-.map-nav{
+.trb_mainContent .map-nav{
 	display:flex;
 	justify-content:space-between;
 	flex-wrap:wrap;
+
 	.button{
-		width:48%;
+		@include sans-serif-text(10px);
+		color:black;
+		display: block;
+		margin: 10px 0;
+		padding:15px 0;
+		background-color:#eee;
+		text-align: center; 
+		cursor:pointer;
+		color:black;
+		transition:all 150ms;
+		width:18%;
+
+		&:first-child{
+			border-radius: 5px 5px 0 0;
+		}
+
+		&:last-child{
+			border-radius: 0 0 5px 5px;
+		}
+
+		&.active, &.active:hover{
+			background-color:$highlight_color;
+			font-weight: bold;
+			color:white;
+			transition:all 150ms;
+		}
+
+		&:hover{
+			opacity: .8;
+			color:black;
+		}
 	}
 }
+
 
 .label{
 	@include sans-serif-text(14px);
@@ -68,6 +69,13 @@ $highlight_color:$trib_orange;
 }
 
 #legend-container{
-	padding: 10px 0;
-	background-color:#eee;
+	// padding: 10px 0;
+	// background-color:#eee;
+}
+
+.legend__divider{
+	border:none;
+	height:1px;
+	background:$trib_light_gray;
+	margin:10px 0;
 }

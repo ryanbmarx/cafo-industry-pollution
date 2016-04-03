@@ -69,22 +69,56 @@ var CafoMap = function(options){
 		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
+		app.renderLegend(app._propertyToMap);
 	});
+	// console.log(app.options.profileOptions);
+	$.getJSON(options.dataRootUrl + "../data.json", function(data){
+		
+		var pointsData = data.profiles;
+		pointsData.forEach( point => {
+			// The first row of points data actually is labels/descriptions from
+			// spreadsheet. This uses the lat and tests if it is a number. If it is,
+			// then add point. If it isn't, then skip (b/c it is probably label)
+			if (!isNaN(parseFloat(point.lat))){
+				// L.circleMarker({ lat:parseFloat(point.lat), lng:parseFloat(point.lng)}, app.stylePollutionEvents.bind(app))
+				L.circleMarker(
+					{lat:parseFloat(point.lat), lng:parseFloat(point.lng)},
+					app.stylePollutionEvents(app)
+				).addTo(map);
+			}
+		});
+		// console.log(app.styleCounties.bind(app));
+	});			
 
 }
 
 CafoMap.prototype.styleCounties = function(feature){
 	var app = this;
 
+	let options = app.options.countyOptions;
 	let scale = app.scales[app._propertyToMap];
 	let datum = feature["properties"][app._propertyToMap]
 
     return {
-        fillColor: app.options.countyFillColor,
+        fillColor: options.fillColor,
         weight: 1,
         opacity: 1,
         color: 'white',
         fillOpacity: scale(datum)
+    };
+}
+
+CafoMap.prototype.stylePollutionEvents = function(feature){
+	var app = this;
+	let options = app.options.profileOptions;
+    return {
+        weight: options.strokeWidth,
+        opacity: 1,
+        color: options.strokeColor,
+		fillColor: options.fillColor,
+        fillOpacity: options.fillOpacity,
+        className:'profile-marker',
+        radius:options.radius
     };
 }
 
@@ -100,14 +134,15 @@ CafoMap.prototype.updateMapData = function(property){
 
 CafoMap.prototype.renderLegend = function(property){
 	var app = this;
-	console.log(app.scales[property].quantiles());
 	var label = app.options.dataLabelLookup[property].primary,
 		sublabel = app.options.dataLabelLookup[property].secondary,
 		mapRange = app.scales[property].range(),
 		opacitiesText = "",
-		backgroundFill = hexToRgb(app.options.countyFillColor),
+		countyBackgroundFill = hexToRgb(app.options.countyOptions.fillColor),
 		thresholds = app.scales[property].quantiles(),
-		thresholdText = "";
+		thresholdText = "",
+		profileOptions = app.options.profileOptions,
+		profilesFill = hexToRgb(profileOptions.fillColor);
 
 		for (var i=0;i<mapRange.length;i++){
 			if (thresholds[i] == undefined){
@@ -123,9 +158,9 @@ CafoMap.prototype.renderLegend = function(property){
 			opacitiesText += `
 				<dt>
 					<span class='box' style='background:rgba(
-					${backgroundFill.r},
-					${backgroundFill.g},
-					${backgroundFill.b},
+					${countyBackgroundFill.r},
+					${countyBackgroundFill.g},
+					${countyBackgroundFill.b},
 					${mapRange[i]}
 					);'></span>
 				</dt>
@@ -134,15 +169,28 @@ CafoMap.prototype.renderLegend = function(property){
 				</dd>
 			`;
 		}
+	var pollutionEventText = `
+		<hr class='legend__divider'>
+		<dt>
+			<span class='box' style='background:rgba(
+				${profilesFill.r},
+				${profilesFill.g},
+				${profilesFill.b},
+				${profileOptions.fillOpacity}
+			);border:${profileOptions.strokeWidth}px solid ${profileOptions.strokeColor};'></span>
+		</dt>
+		<dd>${profileOptions.label}</dd>
+	`;	
 	var legendOutput = `
 		<div class='legend'>
 			<h4 class='label'>${label}</h4>
 			<h5 class='sublabel'>${sublabel}</h5>
-			<dl>${opacitiesText}</dl>
+			<dl>
+				${opacitiesText}
+				${pollutionEventText}
+			</dl>
 		</div>
 	`;
-
-	console.log(legendOutput);
 	app.options.legendContainer.innerHTML = legendOutput;
 }
 
