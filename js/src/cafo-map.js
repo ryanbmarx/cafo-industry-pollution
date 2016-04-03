@@ -132,14 +132,34 @@ CafoMap.prototype.updateMapData = function(property){
 	app.renderLegend(app._propertyToMap);
 }
 
+var formatNumbers = function(numbers, formatType){
+	var retVal = [];
+	if (formatType == "dollars"){
+		numbers.forEach(number => {
+			// TODO: Format $$ with commas
+			retVal.push(number);
+		});
+	} if(formatType == "integer"){
+		numbers.forEach(number => {
+			// TODO: Format as integer, with commas
+			retVal.push(number);
+		});
+	} else {
+		// TODO: Defaults to regular 1-decimal-point numbers with commas
+		numbers.forEach(number => {
+			retVal.push(number);
+		});
+	}
+	return retVal;
+}
+
 CafoMap.prototype.renderLegend = function(property){
 	var app = this;
-	var label = app.options.dataLabelLookup[property].primary,
-		sublabel = app.options.dataLabelLookup[property].secondary,
+	var dataLookup = app.options.dataLabelLookup[property],
 		mapRange = app.scales[property].range(),
 		opacitiesText = "",
 		countyBackgroundFill = hexToRgb(app.options.countyOptions.fillColor),
-		thresholds = app.scales[property].quantiles(),
+		thresholds = formatNumbers(app.scales[property].quantiles(), dataLookup.type),
 		thresholdText = "",
 		profileOptions = app.options.profileOptions,
 		profilesFill = hexToRgb(profileOptions.fillColor);
@@ -172,7 +192,7 @@ CafoMap.prototype.renderLegend = function(property){
 	var pollutionEventText = `
 		<hr class='legend__divider'>
 		<dt>
-			<span class='box' style='background:rgba(
+			<span class='box circle' style='background:rgba(
 				${profilesFill.r},
 				${profilesFill.g},
 				${profilesFill.b},
@@ -183,8 +203,8 @@ CafoMap.prototype.renderLegend = function(property){
 	`;	
 	var legendOutput = `
 		<div class='legend'>
-			<h4 class='label'>${label}</h4>
-			<h5 class='sublabel'>${sublabel}</h5>
+			<h4 class='label'>${dataLookup.primary}</h4>
+			<h5 class='sublabel'>${dataLookup.secondary}</h5>
 			<dl>
 				${opacitiesText}
 				${pollutionEventText}

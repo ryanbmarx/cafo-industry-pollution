@@ -62,7 +62,8 @@
     {% for row in buttons %}
       hogs_data_{{ row.data_att }}: {
         primary: "{{ row.label }}",
-        secondary:"{{ row.secondary_label }}"
+        secondary:"{{ row.secondary_label }}",
+        type:"{{ row.data_type }}"
       }{% if not loop.last %}, {% endif %}
     {% endfor %}
   };
