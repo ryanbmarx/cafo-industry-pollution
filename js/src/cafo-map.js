@@ -84,12 +84,18 @@ var CafoMap = function(options){
 				L.circleMarker(
 					{lat:parseFloat(point.lat), lng:parseFloat(point.lng)},
 					app.stylePollutionEvents(app)
-				).addTo(map);
+				).on('click', function(e){
+					app.showPollutionProfile(e);
+				})
+				.addTo(map);
 			}
 		});
 		// console.log(app.styleCounties.bind(app));
 	});			
+}
 
+CafoMap.prototype.showPollutionProfile = function(e){
+	console.log("click", e);
 }
 
 CafoMap.prototype.styleCounties = function(feature){
@@ -111,6 +117,7 @@ CafoMap.prototype.styleCounties = function(feature){
 CafoMap.prototype.stylePollutionEvents = function(feature){
 	var app = this;
 	let options = app.options.profileOptions;
+	// TODO: Figure out why the danged circles are yellow.
     return {
         weight: options.strokeWidth,
         opacity: 1,
