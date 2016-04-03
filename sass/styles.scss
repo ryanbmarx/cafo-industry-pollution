@@ -79,3 +79,10 @@ $highlight_color:$trib_orange;
 	background:$trib_light_gray;
 	margin:10px 0;
 }
+
+.trb_mainContent #profile-container p{
+	@include sans-serif-text(14px);
+	.address{
+		font-style:italic;
+	}
+}
