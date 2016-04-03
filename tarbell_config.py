@@ -14,7 +14,7 @@ EXCLUDES = ['*.md', 'requirements.txt', 'node_modules', 'sass', 'js/src', 'packa
 # SPREADSHEET_CACHE_TTL = 4
 
 # Create JSON data at ./data.json, disabled by default
-# CREATE_JSON = True
+CREATE_JSON = True
 
 # Get context from a local file or URL. This file can be a CSV or Excel
 # spreadsheet file. Relative, absolute, and remote (http/https) paths can be 
