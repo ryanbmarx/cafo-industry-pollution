@@ -37,7 +37,10 @@
 		width:10px;
 		margin:0 5px 0 0;
 		border:1px solid #aaa;
+		&.circle{border-radius:50%;}
 	}
+
+
 	&.line{
 		.box{
 			width:13px;
