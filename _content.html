@@ -9,7 +9,9 @@
 -->
 <div class='row'>
   <div class='eight columns'>
+    <h2 class='label'>Toggle the choropleth data</h2>
     {% include "_map_buttons.html" %}
+    {% include "_map_select.html" %}
   </div>
   <div class='four columns'>
     <div id='legend-container' class='key'>XX2342342X</div>
@@ -103,6 +105,11 @@
     /* Build the map buttons here */
     var mapButtons = new CafoMap.CafoMapButtons({
       buttons:document.getElementsByClassName('map-button'),
+      map:map
+    });
+    /* Build the <select> here */
+    var mapSelect = new CafoMap.CafoMapSelect({
+      menu:document.getElementsByClassName('map-select'),
       map:map
     });
   };

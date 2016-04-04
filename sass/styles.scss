@@ -10,7 +10,8 @@ $highlight_color:$trib_orange;
 
 @import "legends_and_keys";
 
-
+// Utilities
+.show-phone{display:none;}
 
 #map{
 	height:600px;
@@ -88,4 +89,10 @@ $highlight_color:$trib_orange;
 	.address{
 		font-style:italic;
 	}
+}
+
+@media all and (max-width:700px){
+	// Utilities
+	.hide-phone{display:none !important;}
+	.show-phone{display:block;}
 }
