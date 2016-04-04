@@ -11,5 +11,6 @@
 
 module.exports = {
 	CafoMap:require('./cafo-map'),
-	CafoMapButtons:require('./cafo-map-buttons')
+	CafoMapButtons:require('./cafo-map-buttons'),
+	CafoMapSelect:require('./cafo-map-select')
 };
