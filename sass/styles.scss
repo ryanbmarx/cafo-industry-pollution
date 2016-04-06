@@ -19,6 +19,30 @@ $highlight_color:$trib_orange;
 
 }
 
+#pig-chart-container{
+	background:#eee;
+}
+
+.bar, rect{
+	// stroke-width:1;
+	stroke:black;
+	fill:transparent;
+
+	&.big{
+		fill:yellow;
+	}
+	&.rest{
+		fill:green;
+	}
+}
+
+.bar-label{
+	@include sans-serif-text(11px);
+	font-weight:bold;
+	text-align:center;
+}
+
+
 .trb_mainContent .map-nav{
 	display:flex;
 	justify-content:space-between;
