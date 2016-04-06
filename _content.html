@@ -90,7 +90,7 @@
   */
 
   var dataLabels = {
-    {% for row in buttons %}
+    {% for row in map_buttons %}
     hogs_data_{{ row.data_att }}: {
       primary: "{{ row.label }}",
       secondary:"{{ row.secondary_label }}",
