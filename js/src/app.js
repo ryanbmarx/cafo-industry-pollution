@@ -4,8 +4,7 @@
 - Consider whether the dots should scale with the dead fish
 - Decide what data needs to be in the profile.
 - We're gonna need some geolocating help, but still don't have real data.
-- Programatically trigger a click so the buttons sync with the initial map data.
-- 
+- Programatically trigger a click so the buttons sync with the initial map data. 
 
 - Add d3 charts
 
@@ -24,6 +23,7 @@ Other graphics:
 	- Follow the money
 
 */
+
 
 module.exports = {
 	CafoMap:require('./cafo-map'),
