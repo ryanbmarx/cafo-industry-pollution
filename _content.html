@@ -15,20 +15,20 @@
 
 <div id='pig-chart-container'></div>
 <div class='row'>
-  <div class='eight columns'>
+  <div class='six columns'>
     <h2 class='label'>Toggle the choropleth data</h2>
     {% include "_map_buttons.html" %}
     {% include "_map_select.html" %}
   </div>
-  <div class='four columns'>
+  <div class='six columns'>
     <div id='legend-container' class='key'></div>
   </div>
 </div>
 <div class='row'>
-  <div class='eight columns'>
+  <div class='six columns'>
     <div id="map"></div>
   </div>
-  <div class='four columns'>
+  <div class='six columns'>
     <div id="profile-container" class=''><p><strong>This is the well-written, concise, and precisely edited main intro.</strong></p> {{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
     </div>
   </div>
@@ -64,7 +64,7 @@
   /* 
   This little lookup table provides the labels and sublabels for the choropleth data.
   */
-
+  {# TODO: Use custom filter+python to make JSON var #}
   var pigsOverTimeData = [
     {% for row in pigs_over_time %}
     {
@@ -102,12 +102,13 @@
     }{% if not loop.last %}, {% endif %}
     {% endfor %}
   };
+
 $(document).ready(function(){
 console.log('document is ready');
    var pigChart = new CafoMap.PigsOverTimeChart ({
       container:document.getElementById('pig-chart-container'),
       data: pigsOverTimeData,
-      category: "farms" // can be "value", "pigs" or "farms"
+      category: "pigs" // can be "value", "pigs" or "farms"
     });
   
   
