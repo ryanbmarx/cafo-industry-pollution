@@ -75,11 +75,21 @@ module.exports = function(grunt) {
     }
   };
 
+
+  config.notify_hooks = {
+    options:{
+      enabled:true,
+      success:true,
+      duration:2
+    }
+  }
+
   grunt.initConfig(config);
   
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-minifyify');
   grunt.loadNpmTasks('grunt-contrib-watch');
+  grunt.loadNpmTasks('grunt-notify');
 
   var defaultTasks = [];
  
@@ -87,4 +97,7 @@ module.exports = function(grunt) {
   defaultTasks.push('minifyify');
   
   grunt.registerTask('default', defaultTasks);
+
+  grunt.task.run('notify_hooks');
+
 };
