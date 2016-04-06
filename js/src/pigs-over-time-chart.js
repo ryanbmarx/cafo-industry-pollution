@@ -15,7 +15,8 @@ var PigsOverTimeChart = function(options){
 	app._category = options.category;
 	
 	app.chart = pigChart();
-	app.draw(app._category);
+	// app.draw(app._category);
+	
 }
 
 PigsOverTimeChart.prototype.renderLegend = function(category){

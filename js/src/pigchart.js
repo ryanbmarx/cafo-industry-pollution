@@ -1,5 +1,15 @@
 var d3 = require('d3');
 
+var formatNumber = function(d){
+
+	if (d.type == "currency"){
+		return d3.format("$,")(d.rest)
+	} else {
+		return d3.format(",")(d.rest)
+	}
+}
+
+
 var pigChart = function(){
 
 	var margin = {top: 20, right: 20, bottom: 70, left: 80},
@@ -67,26 +77,16 @@ var pigChart = function(){
 				.attr("x", x.rangeBand()/2)
 				.attr("y", d => height - y(d.big) + 3)
 				.attr("dy", "-.75em")
-				.text(d => {
-					if (d.type == "currency"){
-						return d3.format("$,")(d.big)
-					} else {
-						return d3.format(",")(d.big)
-					}
-				}).attr('class', 'bar-label')
+				.text(formatNumber)
+				.attr('class', 'bar-label')
 				.attr('text-anchor', 'middle');
 
 			bar.append("text")
 				.attr("x", x.rangeBand()/2)
 				.attr("y", d => height - y(d.rest) - y(d.big) + 3)
 				.attr("dy", "-.75em")
-				.text(d => {
-					if (d.type == "currency"){
-						return d3.format("$,")(d.rest)
-					} else {
-						return d3.format(",")(d.rest)
-					}
-				}).attr('class', 'bar-label')
+				.text(formatNumber)
+				.attr('class', 'bar-label')
 				.attr('text-anchor', 'middle');
 
 			chart.append("g")

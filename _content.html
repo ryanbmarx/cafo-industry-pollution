@@ -7,10 +7,6 @@
   ### EDIT IN THE SPREADSHEET!
   #############################################
 -->
-<a href='#' data-chart="value" class='chart-btn'>Show value</a>
-<a href='#' data-chart="farms" class='chart-btn'>Show Farms</a>
-<a href='#' data-chart="pigs" class='chart-btn'>Show pigs</a>
-
 {% include "_chart_buttons.html" %}
 
 <div id='pig-chart-container'></div>
@@ -110,11 +106,14 @@ console.log('document is ready');
       data: pigsOverTimeData,
       category: "pigs" // can be "value", "pigs" or "farms"
     });
+
+   var pigChartButtons = new CafoMap.PigChartButtons({
+      buttons:document.getElementsByClassName('chart-btn'),
+      chart:pigChart
+   });
+   // TRIGGER CLICK EVENT WILL RENDER CHART
+  document.querySelector(".chart-btn[data-chart='pigs']").click();
   
-  
-  $('.chart-btn').click(function(){
-    pigChart.draw($(this).data());
-  });
 
   });
   window.onload = function(){
@@ -168,6 +167,8 @@ console.log('document is ready');
       menu:document.getElementsByClassName('map-select'),
       map:map
     });
+
+
   };
 
 })(window, document);    
