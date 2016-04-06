@@ -1,13 +1,17 @@
 // Formatting http://koaning.s3-website-us-west-2.amazonaws.com/html/d3format.html
+// TODO: Add dynamic chart title, y-axis label
+// TODO: Fill out the stubbed legend method
+// TODO: Figure out the redraw function
+
 var $ = require('jquery');
 var d3 = require('d3');
 
 var PigsOverTimeChart = function(options){
+	
 	var app = this;
 	app.options = options;
 	var data = options.data;
 	app._category = options.category
-	console.log(app._category);
 	var margin = {top: 20, right: 20, bottom: 70, left: 80},
 	outerWidth = app.options.container.offsetWidth,
 	outerHeight = 500,
@@ -22,6 +26,7 @@ var PigsOverTimeChart = function(options){
 
 	var xAxis = d3.svg.axis()
 	.scale(x)
+	.tickSize(1)
 	.orient('bottom');
 
 	var y = d3.scale.linear()
@@ -32,6 +37,7 @@ var PigsOverTimeChart = function(options){
 	
 	var yAxis = d3.svg.axis()
 	.scale(y)
+	.tickSize(1)
 	.orient('left');
 
 	// Make the chart
@@ -71,7 +77,8 @@ var PigsOverTimeChart = function(options){
 		} else {
 			return d3.format(",")(d[app._category].big)
 		}
-	}).attr('class', 'bar-label');
+	}).attr('class', 'bar-label')
+	.attr('text-anchor', 'middle');
 
 	bar.append("text")
 	.attr("x", x.rangeBand()/2)
@@ -83,7 +90,8 @@ var PigsOverTimeChart = function(options){
 		} else {
 			return d3.format(",")(d[app._category].rest)
 		}
-	}).attr('class', 'bar-label');
+	}).attr('class', 'bar-label')
+	.attr('text-anchor', 'middle');
 
 
 	chart.append("g")
@@ -94,13 +102,20 @@ var PigsOverTimeChart = function(options){
 	chart.append("g")
 	.attr("class", "y axis")
 	.call(yAxis);
-	      // .append('text')
-	      // .text('Number of homicides in ' + year)
-	      // .attr('transform','rotate(-90)')
-	      // .attr("y", -30)
-	      // .attr('x', height/-2)
-	      // .attr('class', 'chart__label');
+
+}
+
+PigsOverTimeChart.prototype.renderLegend = function(category){
+	var app = this;
+	console.log('drawing new legend');
+}
+
+PigsOverTimeChart.prototype.draw = function(category){
+	var app = this;
+	console.log('redrawing chart');
+}
 
 
-	  }
+
+
 	  module.exports = PigsOverTimeChart;
