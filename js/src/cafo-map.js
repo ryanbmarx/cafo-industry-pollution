@@ -2,6 +2,7 @@ var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
+var choroplethScale = require('./choropleth-scale');
 
 function hexToRgb(hex) {
 	// Found here: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -32,14 +33,14 @@ function getScales(counties) {
 	];
 
 	// These are the desired opacities (the desired range)
-	let opacities = [0, .25, .39, .5, .95];
+	let opacities = [.1, .25, .39, .5, .95];
 
 	// This object will hold the scales
 	let scales = {};
 
 	dataSets.forEach( dataSet => {
-		scales[dataSet] = d3.scale.quantile()
-		.domain(counties.map(county => county.properties[dataSet] || 0 ))
+		scales[dataSet] = choroplethScale()
+		.domain(counties.map(county => county.properties[dataSet] ))
 		.range(opacities);	
 	});
 	return scales;
@@ -71,15 +72,14 @@ var CafoMap = function(options){
 		app.renderLegend(app._propertyToMap);
 
 		// Add pollution profiles to the map.
-		$.getJSON(options.dataRootUrl + "../data.json", function(data){
+		$.getJSON(options.dataRootUrl + "pollution-events.json", function(data){
 			
-			var pointsData = data.profiles;
-			app.profileData = data.profiles;
+			app.profileData = data;
 
 			// This layer group will let me iterate over markers and style them.
 			var markers = L.layerGroup();
 
-			pointsData.forEach( point => {
+			app.profileData.forEach( point => {
 				// The first row of points data actually is labels/descriptions from
 				// spreadsheet. This uses the lat and tests if it is a number. If it is,
 				// then add point. If it isn't, then skip (b/c it is probably label). 

@@ -22,6 +22,7 @@ Other graphics:
 	- Decoding logos/certifications, presented with a story
 	- Follow the money
 
+- MAYBE: Crowdsource CAFO locations?
 */
 
 
