@@ -4,6 +4,30 @@
 Tarbell project configuration
 """
 
+from flask import Blueprint, g
+from tarbell.hooks import register_hook
+import json
+
+blueprint = Blueprint('cafo_pollution', __name__)
+
+@blueprint.route('/data/pollution-events.json')
+def pollution_events_json():
+    site = g.current_site
+    
+    #This is site data
+    context = site.get_context()
+    data = context['profiles'][1:]
+    return json.dumps(data)
+
+def json_generator():
+    yield '/data/pollution-events.json'
+
+@register_hook('generate')
+def register_json(site, output_root, extra_context):
+    site.freezer.register_generator(json_generator)
+
+
+
 # Google spreadsheet key
 SPREADSHEET_KEY = "1XBlAN9Kcfogf5NgiPZhmr8f63uKZS_zmfyHQYCW_b68"
 
