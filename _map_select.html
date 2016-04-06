@@ -1,6 +1,6 @@
 <nav class='show-phone'>
 	<select name="map-select" class='map-select'>
-		{% for row in buttons %}
+		{% for row in map_buttons %}
 			<option {% if loop.first %}selected{% endif %} value="hogs_data_{{ row.data_att }}">
 				{{ row.label }}
 			</option> 

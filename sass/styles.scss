@@ -10,8 +10,17 @@ $highlight_color:$trib_orange;
 
 @import "legends_and_keys";
 
+// ##############
 // Utilities
+// ##############
+
 .show-phone{display:none;}
+
+
+// ##############
+// MAP
+// ##############
+
 
 #map{
 	height:600px;
@@ -19,15 +28,14 @@ $highlight_color:$trib_orange;
 
 }
 
+// ##############
+// CHART
+// ##############
 #pig-chart-container{
-	background:#eee;
+
 }
 
 .bar, rect{
-	// stroke-width:1;
-	stroke:black;
-	fill:transparent;
-
 	&.big{
 		fill:yellow;
 	}
@@ -43,7 +51,11 @@ $highlight_color:$trib_orange;
 }
 
 
-.trb_mainContent .map-nav{
+// ##############
+// BUTTONS/UI
+// ##############
+
+.trb_mainContent .nav-wrapper{
 	display:flex;
 	justify-content:space-between;
 	flex-wrap:wrap;
@@ -61,12 +73,13 @@ $highlight_color:$trib_orange;
 		transition:all 150ms;
 		width:18%;
 
+		&.chart-btn{width:32%}
 		&:first-child{
-			border-radius: 5px 5px 0 0;
+			// border-radius: 5px 5px 0 0;
 		}
 
 		&:last-child{
-			border-radius: 0 0 5px 5px;
+			// border-radius: 0 0 5px 5px;
 		}
 
 		&.active, &.active:hover{
@@ -84,15 +97,12 @@ $highlight_color:$trib_orange;
 }
 
 
+
 .label{
 	@include sans-serif-text(14px);
 	font-weight:bold;
 }
 
-#legend-container{
-	// padding: 10px 0;
-	// background-color:#eee;
-}
 
 .legend__divider{
 	border:none;

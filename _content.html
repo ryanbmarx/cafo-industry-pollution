@@ -7,6 +7,12 @@
   ### EDIT IN THE SPREADSHEET!
   #############################################
 -->
+<a href='#' data-chart="value" class='chart-btn'>Show value</a>
+<a href='#' data-chart="farms" class='chart-btn'>Show Farms</a>
+<a href='#' data-chart="pigs" class='chart-btn'>Show pigs</a>
+
+{% include "_chart_buttons.html" %}
+
 <div id='pig-chart-container'></div>
 <div class='row'>
   <div class='eight columns'>
@@ -34,6 +40,7 @@
  {% endblock container %}
 
  {% block library_scripts %}
+ <script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
  <script src="//{{ ROOT_URL }}/js/vendor.min.js"></script>
  {% endblock %}
 
@@ -95,59 +102,73 @@
     }{% if not loop.last %}, {% endif %}
     {% endfor %}
   };
-
-  window.onload = function(){
+$(document).ready(function(){
+console.log('document is ready');
    var pigChart = new CafoMap.PigsOverTimeChart ({
       container:document.getElementById('pig-chart-container'),
       data: pigsOverTimeData,
-      category: "pigs" // can be "value", "pigs" or "farms"
+      category: "farms" // can be "value", "pigs" or "farms"
     });
+  
+  
+  $('.chart-btn').click(function(){
+    pigChart.draw($(this).data());
+  });
+
+  });
+  window.onload = function(){
+   // var pigChart = new CafoMap.PigsOverTimeChart ({
+   //    container:document.getElementById('pig-chart-container'),
+   //    data: pigsOverTimeData,
+   //    category: "pigs" // can be "value", "pigs" or "farms"
+   //  });
 
     /* Build the actual map here */
-    // var map = new CafoMap.CafoMap({
-    //   mapTargetID:"map",
-    //   dataRootUrl: "//{{ ROOT_URL }}/data/",
-    //   propertyToMap:"hogs_data_FARM_1000",
-    //   legendContainer:document.getElementById('legend-container'),
-    //   dataLabelLookup:dataLabels,
-    //   countyOptions:{
-    //     fillColor:"#FF0000",
-    //   },
-    //   profileOptions: {
-    //     /* Dot styles here */
-    //     strokeWidth:1,
-    //     strokeColor:'black',
-    //     fill:true,
-    //     fillColor: '#000000',
-    //     fillOpacity: .8,
-    //     radius:5,
-    //     label:"One pollution event",
-    //     profileContainer:document.getElementById('profile-container'),
-    //     active:{
-    //       /* Styles on click */
-    //       fillColor: '#ffff00',
-    //       strokeWidth:3
-    //     },
-    //     hover:{
-    //       /* Styles on click */
-    //       fillColor: '#800',
-    //       strokeWidth:1
-    //     }
+    var map = new CafoMap.CafoMap({
+      mapTargetID:"map",
+      dataRootUrl: "//{{ ROOT_URL }}/data/",
+      propertyToMap:"hogs_data_FARM_1000",
+      legendContainer:document.getElementById('legend-container'),
+      dataLabelLookup:dataLabels,
+      countyOptions:{
+        fillColor:"#FF0000",
+      },
+      profileOptions: {
+        /* Dot styles here */
+        strokeWidth:1,
+        strokeColor:'black',
+        fill:true,
+        fillColor: '#000000',
+        fillOpacity: .8,
+        radius:5,
+        label:"One pollution event",
+        profileContainer:document.getElementById('profile-container'),
+        active:{
+          /* Styles on click */
+          fillColor: '#ffff00',
+          strokeWidth:3
+        },
+        hover:{
+          /* Styles on click */
+          fillColor: '#800',
+          strokeWidth:1
+        }
 
-    //   }
-    // });
+      }
+    });
 
     /* Build the map buttons here */
-    // var mapButtons = new CafoMap.CafoMapButtons({
-    //   buttons:document.getElementsByClassName('map-button'),
-    //   map:map
-    // });
+    var mapButtons = new CafoMap.CafoMapButtons({
+      buttons:document.getElementsByClassName('map-button'),
+      map:map
+    });
     /* Build the <select> here */
-    // var mapSelect = new CafoMap.CafoMapSelect({
-    //   menu:document.getElementsByClassName('map-select'),
-    //   map:map
-    // });
+    var mapSelect = new CafoMap.CafoMapSelect({
+      menu:document.getElementsByClassName('map-select'),
+      map:map
+    });
   };
+
 })(window, document);    
 </script>
 {% endblock scripts %}
