@@ -1,11 +1,10 @@
 var d3 = require('d3');
 
-var formatNumber = function(d){
-
+var formatNumber = function(d, number){
 	if (d.type == "currency"){
-		return d3.format("$,")(d.rest)
+		return d3.format("$,")(number);
 	} else {
-		return d3.format(",")(d.rest)
+		return d3.format(",")(number);
 	}
 }
 
@@ -77,7 +76,9 @@ var pigChart = function(){
 				.attr("x", x.rangeBand()/2)
 				.attr("y", d => height - y(d.big) + 3)
 				.attr("dy", "-.75em")
-				.text(formatNumber)
+				.text( d => {
+					return formatNumber(d, d.big);
+				})
 				.attr('class', 'bar-label')
 				.attr('text-anchor', 'middle');
 
@@ -85,7 +86,9 @@ var pigChart = function(){
 				.attr("x", x.rangeBand()/2)
 				.attr("y", d => height - y(d.rest) - y(d.big) + 3)
 				.attr("dy", "-.75em")
-				.text(formatNumber)
+				.text( d => {
+					return formatNumber(d, d.rest);
+				})
 				.attr('class', 'bar-label')
 				.attr('text-anchor', 'middle');
 
