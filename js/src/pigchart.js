@@ -16,6 +16,7 @@ var pigChart = function(){
 		outerHeight = 500,
 		width,
 		height = outerHeight - margin.top - margin.bottom,
+		transitionTime = 500,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
 
@@ -23,7 +24,7 @@ var pigChart = function(){
 		selection.each(function(data) {
 			let container = d3.select(this);
 
-			container.selectAll('*').remove();
+			// container.selectAll('*').remove();
 			
 			outerWidth = container.node().offsetWidth;
 			width = outerWidth - margin.left - margin.right;
@@ -46,14 +47,25 @@ var pigChart = function(){
 				.tickSize(1)
 				.orient('left');
 
-			var chart = container
-				.append('svg')
-					.attr("width", outerWidth)
-					.attr("height", outerHeight)
-				.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			var chart = container;
+				if (chart.selectAll('svg').size() < 1){
+					chart.append('svg')
+							.attr("width", outerWidth)
+							.attr("height", outerHeight)
+						.append("g")
+							.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				chart.selectAll('svg').append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height + ")")			
+					.call(xAxis);
 
-			var bar = chart.selectAll("g")
+				chart.selectAll('svg').append("g")
+					.attr("class", "y axis")
+					.call(yAxis);
+				};
+				console.log(chart);
+			var bar = chart.select('svg g').selectAll("g")
 				.data(data)
 				.enter().append('g')
 					.attr('transform', function(d,i){
@@ -61,6 +73,12 @@ var pigChart = function(){
 					});
 
 			bar.append("rect")
+				.attr("width", x.rangeBand())
+				.attr('class', 'bar big')
+				// .attr("y", height)
+				// .attr("height", 0)
+				.transition()
+					.duration(transitionTime)
 				.attr("y", d => height - y(d.big))
 				.attr("height", d => y(d.big))
 				.attr("width", x.rangeBand())
@@ -90,16 +108,18 @@ var pigChart = function(){
 					return formatNumber(d, d.rest);
 				})
 				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle');
+				.attr('text-anchor', 'middle')
+				.attr("y", d => height - y(d.rest) - y(d.big) + 30)
+				.style('opacity', 0)
+				.transition()
+					.duration((d,i) => transitionTime * .3)
+					.delay((d,i) => transitionTime * .7)
+				.style('opacity', 1)
+				.attr("y", d => height - y(d.rest) - y(d.big) + 3);
+				
+			  chart.select('.x.axis').transition().duration(transitionTime).call(xAxis);
+			  chart.select('.y.axis').transition().duration(transitionTime).call(yAxis);
 
-			chart.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + height + ")")			
-				.call(xAxis);
-
-			chart.append("g")
-				.attr("class", "y axis")
-				.call(yAxis);
 		});
 	};
 
