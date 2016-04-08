@@ -16,7 +16,7 @@ var pigChart = function(){
 		outerHeight = 500,
 		width,
 		height = outerHeight - margin.top - margin.bottom,
-		transitionTime = 600,
+		transitionTime = 500,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
 
@@ -24,7 +24,7 @@ var pigChart = function(){
 		selection.each(function(data) {
 			let container = d3.select(this);
 
-			container.selectAll('*').remove();
+			// container.selectAll('*').remove();
 			
 			outerWidth = container.node().offsetWidth;
 			width = outerWidth - margin.left - margin.right;
@@ -47,17 +47,33 @@ var pigChart = function(){
 				.tickSize(1)
 				.orient('left');
 
-			var chart = container
-				.append('svg')
-					.attr("width", outerWidth)
-					.attr("height", outerHeight)
-				.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			var chart = container;
 
-			var bar = chart.selectAll("g")
+			if (chart.selectAll('svg').size() < 1){
+				chart.append('svg')
+						.attr("width", outerWidth)
+						.attr("height", outerHeight)
+					.append("g")
+						.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+						.attr('class', 'chart-inner')
+					.append("g")
+					.attr("class", "x axis")
+					.attr("transform", "translate(0," + height + ")")			
+					.call(xAxis);
+
+				chart.select('.chart-inner').append("g")
+					.attr("class", "y axis")
+					// .call(yAxis);
+			};
+
+			console.log(chart.select('.chart-inner')[0][0]);
+			var bar = chart.select('.chart-inner')
+				.selectAll("g")
 				.data(data)
-				.enter().append('g')
+				.enter()
+					.append('g')
 					.attr('transform', function(d,i){
+						console.log(d,i);
 						return "translate(" + x(d.year) + ",0)";
 					});
 
@@ -69,40 +85,29 @@ var pigChart = function(){
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => height - y(d.big))
-				.attr("height", d => y(d.big));
-				
-				
+				.attr("height", d => y(d.big))
+				.attr("width", x.rangeBand())
+				.attr('class', 'bar big');
 
 			bar.append("rect")
-				.attr("y", height)
-				.attr("height", 0)
-				.attr("width", x.rangeBand())
-				.attr('class', 'bar rest')
-				.transition()
-					.duration(transitionTime)
 				.attr("y", d => (height - y(d.rest) - y(d.big)))
-				.attr("height", d => y(d.rest));
+				.attr("height", d => y(d.rest))
+				.attr("width", x.rangeBand())
+				.attr('class', 'bar rest');
 
 			bar.append("text")
-				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle')
+				.attr("x", x.rangeBand()/2)
+				.attr("y", d => height - y(d.big) + 3)
 				.attr("dy", "-.75em")
 				.text( d => {
 					return formatNumber(d, d.big);
 				})
-				.attr("y", d => height - y(d.big) + 30)
-				.attr("x", x.rangeBand()/2)
-				.style('opacity', 0)
-				.transition()
-					.duration((d,i) => transitionTime * .3)
-					.delay((d,i) => transitionTime * .7)
-				.style('opacity', 1)
-				.attr("y", d => height - y(d.big) + 3);
-				
+				.attr('class', 'bar-label')
+				.attr('text-anchor', 'middle');
 
 			bar.append("text")
-				
 				.attr("x", x.rangeBand()/2)
+				.attr("y", d => height - y(d.rest) - y(d.big) + 3)
 				.attr("dy", "-.75em")
 				.text( d => {
 					return formatNumber(d, d.rest);
@@ -116,17 +121,12 @@ var pigChart = function(){
 					.delay((d,i) => transitionTime * .7)
 				.style('opacity', 1)
 				.attr("y", d => height - y(d.rest) - y(d.big) + 3);
-				
-				
+			
+			chart.select('.y.axis')
+			  	.transition()
+			  	.duration(transitionTime)
+			  	.call(yAxis);
 
-			chart.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(0," + height + ")")			
-				.call(xAxis);
-
-			chart.append("g")
-				.attr("class", "y axis")
-				.call(yAxis);
 		});
 	};
 
