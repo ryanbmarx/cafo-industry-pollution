@@ -16,6 +16,7 @@ var pigChart = function(){
 		outerHeight = 500,
 		width,
 		height = outerHeight - margin.top - margin.bottom,
+		transitionTime = 600,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
 
@@ -61,36 +62,62 @@ var pigChart = function(){
 					});
 
 			bar.append("rect")
-				.attr("y", d => height - y(d.big))
-				.attr("height", d => y(d.big))
 				.attr("width", x.rangeBand())
-				.attr('class', 'bar big');
+				.attr('class', 'bar big')
+				.attr("y", height)
+				.attr("height", 0)
+				.transition()
+					.duration(transitionTime)
+				.attr("y", d => height - y(d.big))
+				.attr("height", d => y(d.big));
+				
+				
 
 			bar.append("rect")
-				.attr("y", d => (height - y(d.rest) - y(d.big)))
-				.attr("height", d => y(d.rest))
+				.attr("y", height)
+				.attr("height", 0)
 				.attr("width", x.rangeBand())
-				.attr('class', 'bar rest');
+				.attr('class', 'bar rest')
+				.transition()
+					.duration(transitionTime)
+				.attr("y", d => (height - y(d.rest) - y(d.big)))
+				.attr("height", d => y(d.rest));
 
 			bar.append("text")
-				.attr("x", x.rangeBand()/2)
-				.attr("y", d => height - y(d.big) + 3)
+				.attr('class', 'bar-label')
+				.attr('text-anchor', 'middle')
 				.attr("dy", "-.75em")
 				.text( d => {
 					return formatNumber(d, d.big);
 				})
-				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle');
+				.attr("y", d => height - y(d.big) + 30)
+				.attr("x", x.rangeBand()/2)
+				.style('opacity', 0)
+				.transition()
+					.duration((d,i) => transitionTime * .3)
+					.delay((d,i) => transitionTime * .7)
+				.style('opacity', 1)
+				.attr("y", d => height - y(d.big) + 3);
+				
 
 			bar.append("text")
+				
 				.attr("x", x.rangeBand()/2)
-				.attr("y", d => height - y(d.rest) - y(d.big) + 3)
 				.attr("dy", "-.75em")
 				.text( d => {
 					return formatNumber(d, d.rest);
 				})
 				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle');
+				.attr('text-anchor', 'middle')
+				.attr("y", d => height - y(d.rest) - y(d.big) + 30)
+				.style('opacity', 0)
+				.transition()
+					.duration((d,i) => transitionTime * .3)
+					.delay((d,i) => transitionTime * .7)
+				.style('opacity', 1)
+				.attr("y", d => height - y(d.rest) - y(d.big) + 3);
+				
+				
 
 			chart.append("g")
 				.attr("class", "x axis")
