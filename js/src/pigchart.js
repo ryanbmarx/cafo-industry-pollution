@@ -16,7 +16,7 @@ var pigChart = function(){
 		outerHeight = 500,
 		width,
 		height = outerHeight - margin.top - margin.bottom,
-		transitionTime = 500,
+		transitionTime = 1500,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
 
@@ -49,84 +49,114 @@ var pigChart = function(){
 
 			var chart = container;
 
-			if (chart.selectAll('svg').size() < 1){
-				chart.append('svg')
+			if(chart.select('svg').size() < 1){
+				console.log('first time');
+
+				chart = container
+					.append('svg')
 						.attr("width", outerWidth)
 						.attr("height", outerHeight)
 					.append("g")
 						.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-						.attr('class', 'chart-inner')
-					.append("g")
+						.attr('class','chart-inner');
+				var bar = chart.selectAll("g")
+					.data(data)
+					.enter().append('g')
+						.attr('class','bar-wrapper')
+						.attr('transform', function(d,i){
+							return "translate(" + x(d.year) + ",0)";
+						});
+				
+				var bar = chart.selectAll("g")
+					.data(data);
+				bar.append("rect")
+					.attr("width", x.rangeBand())
+					.attr('class', 'bar big')
+					.attr("y", height)
+					.attr("height", 0);
+		
+				bar.append("rect")
+					.attr("width", x.rangeBand())
+					.attr('class', 'bar rest')
+					.attr("y", height)
+					.attr("height", 0);
+					
+				bar.append("text")
+					.attr('class', 'bar-label big')
+					.attr("x", x.rangeBand()/2)
+					.style('opacity', 0)
+					.attr("y", d => height - y(d.big) + 30)
+					.attr("dy", "-.75em")
+					.attr('text-anchor', 'middle');
+
+				bar.append("text")
+					.attr('class', 'bar-label rest')
+					.attr("x", x.rangeBand()/2)
+					.attr("dy", "-.75em")
+					.attr('text-anchor', 'middle')
+					.attr("y", d => height - y(d.rest) - y(d.big) + 30)
+					.style('opacity', 0)
+
+				chart.append("g")
 					.attr("class", "x axis")
 					.attr("transform", "translate(0," + height + ")")			
+					.transition()
+						.duration(transitionTime)
 					.call(xAxis);
-
-				chart.select('.chart-inner').append("g")
+				
+				chart.append("g")
 					.attr("class", "y axis")
-					// .call(yAxis);
-			};
-
-			console.log(chart.select('.chart-inner')[0][0]);
-			var bar = chart.select('.chart-inner')
-				.selectAll("g")
-				.data(data)
-				.enter()
-					.append('g')
-					.attr('transform', function(d,i){
-						console.log(d,i);
-						return "translate(" + x(d.year) + ",0)";
-					});
-
-			bar.append("rect")
-				.attr("width", x.rangeBand())
-				.attr('class', 'bar big')
-				.attr("y", height)
-				.attr("height", 0)
+					.transition()
+						.duration(transitionTime)
+					.call(yAxis);
+			} else {console.log('subsequent time');}
+			
+			console.log();
+			var rebars = chart.data(data).selectAll(".chart-inner g");
+			// console.log(rebars);
+			// Size and transition the bars
+			rebars.selectAll('.bar.big')
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => height - y(d.big))
-				.attr("height", d => y(d.big))
-				.attr("width", x.rangeBand())
-				.attr('class', 'bar big');
-
-			bar.append("rect")
+				.attr("height", d => {
+					console.log("Inside big height: ", d);
+					return y(d.big);
+				})
+	
+			rebars.selectAll('.bar.rest')
+				.transition()
+					.duration(transitionTime)
 				.attr("y", d => (height - y(d.rest) - y(d.big)))
-				.attr("height", d => y(d.rest))
-				.attr("width", x.rangeBand())
-				.attr('class', 'bar rest');
+				.attr("height", d => y(d.rest));
 
-			bar.append("text")
-				.attr("x", x.rangeBand()/2)
-				.attr("y", d => height - y(d.big) + 3)
-				.attr("dy", "-.75em")
+			// Populate and place the text labels
+			rebars.selectAll ('.bar-label.big')
 				.text( d => {
+					// console.log(d);
+					// console.log("big label: ", formatNumber(d, d.big));
 					return formatNumber(d, d.big);
 				})
-				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle');
+				.transition()
+					.duration((d,i) => transitionTime * .3)
+					.delay((d,i) => transitionTime * .7)
+				.style('opacity', 1)
+				.attr("y", d => height - y(d.big) + 3);
 
-			bar.append("text")
-				.attr("x", x.rangeBand()/2)
-				.attr("y", d => height - y(d.rest) - y(d.big) + 3)
-				.attr("dy", "-.75em")
+			rebars.selectAll ('.bar-label.rest')
 				.text( d => {
 					return formatNumber(d, d.rest);
 				})
-				.attr('class', 'bar-label')
-				.attr('text-anchor', 'middle')
-				.attr("y", d => height - y(d.rest) - y(d.big) + 30)
-				.style('opacity', 0)
 				.transition()
 					.duration((d,i) => transitionTime * .3)
 					.delay((d,i) => transitionTime * .7)
 				.style('opacity', 1)
 				.attr("y", d => height - y(d.rest) - y(d.big) + 3);
-			
-			chart.select('.y.axis')
-			  	.transition()
-			  	.duration(transitionTime)
-			  	.call(yAxis);
-
+				
+			chart.select(".y.axis")
+				.transition()
+					.duration(transitionTime)
+				.call(yAxis);
 		});
 	};
 
