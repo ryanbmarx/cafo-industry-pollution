@@ -17,6 +17,7 @@ var pigChart = function(){
 		width,
 		height = outerHeight - margin.top - margin.bottom,
 		transitionTime = 1500,
+		labelTransitionTime = 150,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
 
@@ -59,30 +60,37 @@ var pigChart = function(){
 					.append("g")
 						.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 						.attr('class','chart-inner');
-				var bar = chart.selectAll("g")
-					.data(data)
+				var bar = chart.selectAll(".bar-wrapper")
+						.data(data, d => d.year)
 					.enter().append('g')
 						.attr('class','bar-wrapper')
 						.attr('transform', function(d,i){
 							return "translate(" + x(d.year) + ",0)";
 						});
 				
-				var bar = chart.selectAll("g")
+				var bar = chart.selectAll(".bar-wrapper")
 					.data(data);
-				bar.append("rect")
-					.attr("width", x.rangeBand())
-					.attr('class', 'bar big')
-					.attr("y", height)
-					.attr("height", 0);
+				bar.selectAll('.bar--big')
+						.data(d => [d])
+					.enter()
+					.append("rect")
+						.attr("width", x.rangeBand())
+						.attr('class', 'bar--big')
+						.attr("y", height)
+						.attr("height", 0);
 		
-				bar.append("rect")
-					.attr("width", x.rangeBand())
-					.attr('class', 'bar rest')
-					.attr("y", height)
-					.attr("height", 0);
+				bar.selectAll(".bar--rest")
+						.data(d => [d])
+					.enter()
+					.append("rect")
+						.attr("width", x.rangeBand())
+						.attr('class', 'bar--rest')
+						.attr("y", height)
+						.attr("height", 0);
 					
 				bar.append("text")
-					.attr('class', 'bar-label big')
+					.data(d => [d])
+					.attr('class', 'bar-label--big')
 					.attr("x", x.rangeBand()/2)
 					.style('opacity', 0)
 					.attr("y", d => height - y(d.big) + 30)
@@ -90,7 +98,8 @@ var pigChart = function(){
 					.attr('text-anchor', 'middle');
 
 				bar.append("text")
-					.attr('class', 'bar-label rest')
+					.data(d => [d])
+					.attr('class', 'bar-label--rest')
 					.attr("x", x.rangeBand()/2)
 					.attr("dy", "-.75em")
 					.attr('text-anchor', 'middle')
@@ -111,45 +120,49 @@ var pigChart = function(){
 					.call(yAxis);
 			} else {console.log('subsequent time');}
 			
-			console.log();
-			var rebars = chart.data(data).selectAll(".chart-inner g");
-			// console.log(rebars);
+			var rebars = chart.selectAll(".chart-inner .bar-wrapper").data(data, d => d.year)
+				
 			// Size and transition the bars
-			rebars.selectAll('.bar.big')
+			rebars.selectAll('.bar--big')
+				.data(d => [d])
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => height - y(d.big))
-				.attr("height", d => {
-					console.log("Inside big height: ", d);
-					return y(d.big);
-				})
+				.attr("height", d => y(d.big));
 	
-			rebars.selectAll('.bar.rest')
+			rebars.selectAll('.bar--rest')
+				.data(d => [d])
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => (height - y(d.rest) - y(d.big)))
 				.attr("height", d => y(d.rest));
 
 			// Populate and place the text labels
-			rebars.selectAll ('.bar-label.big')
+			rebars.selectAll ('.bar-label--big')
+				.data(d => [d])
+				.transition()
+					.duration(labelTransitionTime)
+				.style('opacity', 0)
 				.text( d => {
-					// console.log(d);
-					// console.log("big label: ", formatNumber(d, d.big));
 					return formatNumber(d, d.big);
 				})
 				.transition()
-					.duration((d,i) => transitionTime * .3)
-					.delay((d,i) => transitionTime * .7)
+					.delay(transitionTime)
+					.duration(labelTransitionTime)
 				.style('opacity', 1)
 				.attr("y", d => height - y(d.big) + 3);
 
-			rebars.selectAll ('.bar-label.rest')
+			rebars.selectAll ('.bar-label--rest')
+				.data(d => [d])
+				.transition()
+					.duration(labelTransitionTime)
+				.style('opacity', 0)
 				.text( d => {
 					return formatNumber(d, d.rest);
 				})
 				.transition()
-					.duration((d,i) => transitionTime * .3)
-					.delay((d,i) => transitionTime * .7)
+					.delay(transitionTime)
+					.duration(labelTransitionTime)
 				.style('opacity', 1)
 				.attr("y", d => height - y(d.rest) - y(d.big) + 3);
 				

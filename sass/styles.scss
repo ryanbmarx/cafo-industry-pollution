@@ -35,19 +35,21 @@ $highlight_color:$trib_orange;
 
 }
 
-.bar, rect{
-	&.big{
+.bar{
+	&--big{
 		fill:$trib_blue;
 	}
-	&.rest{
+	&--rest{
 		fill:$trib_light_blue;
 	}
 }
 
 .bar-label{
-	@include sans-serif-text(11px);
-	font-weight:bold;
-	text-align:center;
+	&--big, &--rest{
+		@include sans-serif-text(11px);
+		font-weight:bold;
+		text-align:center;
+	}
 }
 
 .axis{
