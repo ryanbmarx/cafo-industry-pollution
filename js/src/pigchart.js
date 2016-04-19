@@ -146,24 +146,36 @@ var pigChart = function(){
 				.data(d => [d])
 				.transition()
 					.duration(labelTransitionTime)
-				.style('opacity', 0)
-				.text( d => {
-					return formatNumber(d, d.big);
-				})
-				.transition()
-					.delay(transitionTime)
-					.duration(labelTransitionTime)
-				.style('opacity', 1)
-				.attr("y", d => height - y(d.big) + 3);
+					.each("start", function(){
+						d3.select(this).style('opacity', 0)
+					})
+					.each("end", function(){
+						d3.select(this).text( d => {
+							return formatNumber(d, d.big);
+						})
+						.attr("y", d => height - y(d.big) + 30);
+					})
+					.transition()
+						.delay(transitionTime)
+						.duration(labelTransitionTime)
+					.style('opacity', 1)
+					.attr("y", d => height - y(d.big) + 3);
 
 			rebars.selectAll ('.bar-label--rest')
 				.data(d => [d])
 				.transition()
 					.duration(labelTransitionTime)
+					.each("start", function(){
+						d3.select(this).style('opacity', 0)
+					})
+					.each("end", function(){
+						d3.select(this).text( d => {
+							return formatNumber(d, d.rest);
+						})
+						.attr("y", d => height - y(d.rest) - y(d.big) + 30);						
+					})
 				.style('opacity', 0)
-				.text( d => {
-					return formatNumber(d, d.rest);
-				})
+
 				.transition()
 					.delay(transitionTime)
 					.duration(labelTransitionTime)
