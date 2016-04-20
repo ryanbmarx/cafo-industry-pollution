@@ -99,9 +99,8 @@
     {% endfor %}
   };
 
-$(document).ready(function(){
-console.log('document is ready');
-   var pigChart = new CafoMap.PigsOverTimeChart ({
+  window.onload = function(){
+    var pigChart = new CafoMap.PigsOverTimeChart ({
       container:document.getElementById('pig-chart-container'),
       data: pigsOverTimeData,
       category: "pigs" // can be "value", "pigs" or "farms"
@@ -114,14 +113,6 @@ console.log('document is ready');
    // TRIGGER CLICK EVENT WILL RENDER CHART
   document.querySelector(".chart-btn[data-chart='pigs']").click();
   
-
-  });
-  window.onload = function(){
-   // var pigChart = new CafoMap.PigsOverTimeChart ({
-   //    container:document.getElementById('pig-chart-container'),
-   //    data: pigsOverTimeData,
-   //    category: "pigs" // can be "value", "pigs" or "farms"
-   //  });
 
     /* Build the actual map here */
     var map = new CafoMap.CafoMap({
