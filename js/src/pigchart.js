@@ -16,7 +16,7 @@ var pigChart = function(){
 		outerHeight = 500,
 		width,
 		height = outerHeight - margin.top - margin.bottom,
-		transitionTime = 1500,
+		transitionTime = 1000,
 		labelTransitionTime = 150,
 		x = d3.scale.ordinal(),
 		y = d3.scale.linear();
