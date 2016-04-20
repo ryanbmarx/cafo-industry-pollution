@@ -19,7 +19,8 @@ var pigChart = function(){
 		transitionTime = 1000,
 		labelTransitionTime = 150,
 		x = d3.scale.ordinal(),
-		y = d3.scale.linear();
+		y = d3.scale.linear(),
+		y2 = d3.scale.linear();
 
 	var component = function(selection){
 		selection.each(function(data) {
@@ -34,9 +35,16 @@ var pigChart = function(){
 				.domain(data.map(d => d.year));
 
 			y.range([0, height])
-				.domain([0,d3.max(data, d => {
-					return d.big + d.rest;
-				})]);
+				.domain([0,d3.max(data, d => d.big + d.rest)]);
+
+			// Because the SVG origin is upper left, the logic for all heights
+			// and Y placements is inverted and unintuitive. Therefore, I'm using
+			// this other scale, with an inverted range, so that the bars can
+			// be drawn/placed using logic that makes sense to me and the scales
+			// can have a zero baseline at the bottom.
+			y2.range([height,0])
+				.domain([0,d3.max(data, d => d.big + d.rest)]);
+
 
 			var xAxis = d3.svg.axis()
 				.scale(x)
@@ -44,7 +52,7 @@ var pigChart = function(){
 				.orient('bottom');
 
 			var yAxis = d3.svg.axis()
-				.scale(y)
+				.scale(y2)
 				.tickSize(1)
 				.orient('left');
 
