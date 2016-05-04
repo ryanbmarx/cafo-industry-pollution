@@ -52,10 +52,11 @@ var CafoMap = function(options){
 	app._propertyToMap = app.options.propertyToMap;
 	//Make a new map
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
-	{
-		center: [39.739190, -89.503629],
-		zoom: 7
-	}
+		{
+			center: [39.739190, -89.503629],
+			zoom: 7,
+			scrollWheelZoom:false
+		}
 	);
 
 	// Add the fricking cool map tiles
