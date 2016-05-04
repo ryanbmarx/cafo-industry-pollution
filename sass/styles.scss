@@ -60,10 +60,30 @@ $highlight_color:$trib_orange;
 	}
 }
 
-
+.changeline{
+	&--rest{
+		stroke:red;
+		fill:none;
+	}
+	&--big{
+		stroke:yellow;
+		fill:none;
+	}
+}
 // ##############
 // BUTTONS/UI
 // ##############
+
+%profile-button-carat{
+	font-family: trb_Icons;
+	position: relative;
+	top: 1px;
+	margin: 0 4px;
+	background: #aaa;
+	color: white;
+	border-radius: 50%;
+	padding: 4px;
+}
 
 .trb_mainContent .nav-wrapper{
 	display:flex;
@@ -81,15 +101,32 @@ $highlight_color:$trib_orange;
 		cursor:pointer;
 		color:black;
 		transition:all 150ms;
-		width:18%;
+		
+		&.map-button{width:18%}
+		&.chart-button{width:32%}
+		&.profile-button{
+			
+			width:49%;
+			&[data-direction='next']{
+				border-radius: 0 5px 5px 0;
+				&:after{
+					@extend %profile-button-carat;
+					content:'w';
+					}}
 
-		&.chart-btn{width:32%}
-		&:first-child{
-			// border-radius: 5px 5px 0 0;
+					&[data-direction='back']{
+						border-radius: 5px 0 0 5px;
+						&:before{
+							@extend %profile-button-carat;
+							content:'v';
+						}
+					}
+				}
+				&:first-child{
 		}
 
 		&:last-child{
-			// border-radius: 0 0 5px 5px;
+
 		}
 
 		&.active, &.active:hover{
