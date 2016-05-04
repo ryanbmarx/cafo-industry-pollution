@@ -29,6 +29,7 @@ Other graphics:
 module.exports = {
 	CafoMap:require('./cafo-map'),
 	CafoMapButtons:require('./cafo-map-buttons'),
+	CafoProfileButtons:require('./cafo-profile-buttons'),
 	CafoMapSelect:require('./cafo-map-select'),
 	PigsOverTimeChart:require('./pigs-over-time-chart'),
 	PigChartButtons:require('./pig-chart-buttons')
