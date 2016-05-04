@@ -25,7 +25,9 @@
     <div id="map"></div>
   </div>
   <div class='six columns'>
-    <div id="profile-container" class=''><p><strong>This is the well-written, concise, and precisely edited main intro.</strong></p> {{intro|markdown}}{{intro|markdown}}{{intro|markdown}}
+    <div id="profile-container" class=''>
+      <h2>{{ map_intro_header|process_text }}</h2> 
+      {{map_intro_text|markdown}}
     </div>
   </div>
 </div>
