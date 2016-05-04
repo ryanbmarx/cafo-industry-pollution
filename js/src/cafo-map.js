@@ -50,6 +50,7 @@ var CafoMap = function(options){
 	var app = this;
 	app.options = options;
 	app._propertyToMap = app.options.propertyToMap;
+	app.activeIndex = 0;
 	//Make a new map
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
 		{
@@ -80,24 +81,25 @@ var CafoMap = function(options){
 			// This layer group will let me iterate over markers and style them.
 			var markers = L.layerGroup();
 
-			app.profileData.forEach( point => {
+			app.profileData.forEach( (pollutionEvent,i) => {
 				// The first row of points data actually is labels/descriptions from
 				// spreadsheet. This uses the lat and tests if it is a number. If it is,
-				// then add point. If it isn't, then skip (b/c it is probably label). 
-				// Also, check for the publish boolean in the JSON. Don't publish except when it's true.
-				if (!isNaN(parseFloat(point.lat)) && point.publish == true){
+				// then add point. If it isn't, then skip (b/c it is probably label or a 
+				// point without coordinates yet). Also, check for the publish boolean in 
+				// the JSON. Don't publish except when it's true.
+				if (!isNaN(parseFloat(pollutionEvent.lat)) && pollutionEvent.publish == true){
 					let marker = L.circleMarker(
-						{lat:parseFloat(point.lat), lng:parseFloat(point.lng)},
+						{lat:parseFloat(pollutionEvent.lat), lng:parseFloat(pollutionEvent.lng)},
 						app.stylePollutionEvents(app)
 						).on('click', function(e){
-							app.showPollutionProfile(e);
+							app.showPollutionProfileByIndex(i);
 							markers.eachLayer(marker => {
 								marker.setStyle(app.stylePollutionEvents(app));
 							});
 							e.target.setStyle(app.styleActivePollutionEvents(app))
 							// clickHandler(e, app);
 						});
-						marker.profileId = point.id;
+						marker.profileId = pollutionEvent.id;
 						marker.addTo(markers);
 				}
 			});
@@ -107,15 +109,15 @@ var CafoMap = function(options){
 	});		
 }
 
-CafoMap.prototype.showPollutionProfile = function(e){
+CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	var app = this;
+	app.activeIndex = i;
+
 	let profileContainer = app.options.profileOptions.profileContainer;
 	// Take the profile data (array of objects) and filter
 	// down to just the one we want, storing it in variable "p"
-	let p = app.profileData.filter( profile => {
-		return profile.id == e.target.profileId;
-	})[0];
+	let p = app.profileData[app.activeIndex];
 	// Fill out the profile content.
 	// TODO: Design this with the data we want and design it nicely.
 	
@@ -128,6 +130,26 @@ CafoMap.prototype.showPollutionProfile = function(e){
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText;
+}
+
+CafoMap.prototype.showNextPollutionEvent = function(){
+	var nextIndex = this.activeIndex + 1;
+
+	if(nextIndex >= this.profileData.length){
+		nextIndex = 0;
+	}
+
+	this.showPollutionProfileByIndex(nextIndex);
+}
+
+CafoMap.prototype.showPreviousPollutionEvent = function(){
+	var nextIndex = this.activeIndex - 1;
+
+	if(nextIndex < 0){
+		nextIndex = this.profileData.length - 1;
+	}
+
+	this.showPollutionProfileByIndex(nextIndex);
 }
 
 CafoMap.prototype.styleCounties = function(feature){

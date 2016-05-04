@@ -15,6 +15,8 @@
     <h2 class='label'>Toggle the choropleth data</h2>
     {% include "_map_buttons.html" %}
     {% include "_map_select.html" %}
+    <h2 class='label'>Cycle through pollution events</h2>
+    {% include "_profile_buttons.html" %}
   </div>
   <div class='six columns'>
     <div id='legend-container' class='key'></div>
@@ -109,11 +111,11 @@
     });
 
    var pigChartButtons = new CafoMap.PigChartButtons({
-      buttons:document.getElementsByClassName('chart-btn'),
+      buttons:document.getElementsByClassName('chart-button'),
       chart:pigChart
    });
    // TRIGGER CLICK EVENT WILL RENDER CHART
-  document.querySelector(".chart-btn[data-chart='pigs']").click();
+  document.querySelector(".chart-button[data-chart='pigs']").click();
   
 
     /* Build the actual map here */
@@ -161,6 +163,10 @@
       map:map
     });
 
+    var profileButtons = new CafoMap.CafoProfileButtons({
+      buttons:document.getElementsByClassName('profile-button'),
+      map:map
+    });
 
   };
 
