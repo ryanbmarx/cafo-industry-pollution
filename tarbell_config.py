@@ -10,13 +10,21 @@ import json
 
 blueprint = Blueprint('cafo_pollution', __name__)
 
+def has_coordinates(event):
+    return ('lat' in event and event['lat'] and 
+            'lng' in event and event['lng'])
+
+def filter_pollution_events(events):
+    return [e for e in events
+            if has_coordinates(e)]
+
 @blueprint.route('/data/pollution-events.json')
 def pollution_events_json():
     site = g.current_site
     
     #This is site data
     context = site.get_context()
-    data = context['profiles'][1:]
+    data = filter_pollution_events(context['profiles'][1:])
     return json.dumps(data)
 
 def json_generator():
