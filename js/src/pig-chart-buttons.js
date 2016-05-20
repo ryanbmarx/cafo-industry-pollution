@@ -5,7 +5,7 @@ class PigChartButtons {
 			button.addEventListener('click', function(e){
 	 	 		e.preventDefault();
 	 	 		// update choropleth map base on selected button/data- attribute
-				options.chart.draw(this.dataset.chart);
+				options.chart.setCategory(this.dataset.chart).draw();
 				forEach.call(options.buttons, button => {
 					button.classList.remove('active');
 				});
