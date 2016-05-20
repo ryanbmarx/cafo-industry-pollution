@@ -6,6 +6,7 @@
 var $ = require('jquery');
 var d3 = require('d3');
 var pigChart = require('./pigChart');
+var debounce = require('lodash/debounce');
 
 var PigsOverTimeChart = function(options){
 	
@@ -15,8 +16,20 @@ var PigsOverTimeChart = function(options){
 	app._category = options.category;
 	
 	app.chart = pigChart();
-	// app.draw(app._category);
-	
+
+		
+
+
+}
+
+PigsOverTimeChart.prototype.initResizeHandler = function(){
+	d3.select(window).on('resize', this.draw())
+}
+
+
+PigsOverTimeChart.prototype.setCategory = function(category){
+	this._category = category;
+	return this;
 }
 
 PigsOverTimeChart.prototype.renderLegend = function(category){
@@ -24,11 +37,19 @@ PigsOverTimeChart.prototype.renderLegend = function(category){
 	console.log('drawing new legend');
 }
 
-PigsOverTimeChart.prototype.draw = function(category){
+PigsOverTimeChart.prototype.draw = function(){
 	var app = this;
+
+	// Draw the chart use an app variable to define the data
 	d3.select(app.options.container)
-		.datum(app.selectData(category, app.data))
+		.datum(app.selectData(app._category, app.data))
 		.call(app.chart);
+
+	// After drawing the chart, we want to make sure to debounce the redraw
+	d3.select(window).on('resize',debounce(function(){
+		app.draw();
+	}, 300));
+	return app;
 }
 
 PigsOverTimeChart.prototype.selectData = function(category, data){
