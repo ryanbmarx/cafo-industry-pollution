@@ -17,7 +17,8 @@ module.exports = function(grunt) {
   var vendorPackages = [
     'd3', 
     'leaflet',
-    'jquery'
+    'jquery',
+    'lodash/debounce'
   ];
 
   config.minifyify = {
