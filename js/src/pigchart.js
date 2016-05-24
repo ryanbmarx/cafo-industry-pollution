@@ -9,6 +9,98 @@ var formatNumber = function(d, number){
 }
 
 
+var changeLines = function(selection, x, data, height, y, transitionTime, labelTransitionTime){
+	console.log('changelines', x)
+	var barWidth = x.rangeBand(),
+		lastIndex = data.length-1,
+		x_1 = x(data[0].year) + barWidth/2,
+		x_2 = x(data[data.length-1].year) + barWidth/2,
+		y_1rest = height - y(data[0].rest) - y(data[0].big),
+		y_2rest = height - y(data[lastIndex].rest) - y(data[lastIndex].big),
+		y_1big = height - y(data[0].big),
+		y_2big = height - y(data[lastIndex].big),
+		bigAngle = Math.atan2(y_2big - y_1big, x_2 - x_1) * 180 / Math.PI,
+		restAngle = Math.atan2(y_2rest - y_1rest, x_2 - x_1) * 180 / Math.PI;
+		console.log(bigAngle, restAngle);	
+
+	// First, if needed, append the paths and associated labels
+
+	if (selection.select('.chart-inner .changeline--rest').size() < 1){
+		d3.select('.chart-inner')
+			.append('path')
+				.classed('changeline--rest', true);
+		
+		d3.select('.chart-inner')
+			.append('text')
+				.classed('changelabel--rest', true)
+				.text('XXX');
+		console.log('rest');
+	}
+
+	if (selection.select('.chart-inner .changeline--big').size() < 1){
+		d3.select('.chart-inner')
+			.append('path')
+				.classed('changeline--big', true);
+		
+		d3.select('.chart-inner')
+			.append('text')
+				.classed('changelabel--big', true)
+				.text('XXX');
+	}
+
+	d3.select('.changeline--rest')
+			.transition()
+				.duration(transitionTime)
+		.attr('d', 'M'+ x_1 +' '+ y_1rest +', L '+ x_2 +' '+ y_2rest)
+
+	d3.select('.changeline--big')
+			.transition()
+				.duration(transitionTime)
+		.attr('d', 'M'+ x_1 +' '+ y_1big +', L '+ x_2 +' '+ y_2big)
+
+	d3.select('.changelabel--big')
+		.transition()
+			.duration(labelTransitionTime)
+			.each("start", function(){
+				d3.select(this)
+					.style('opacity', 0)
+			})
+			.each("end", function(){
+				d3.select(this).text( d => {
+					return "change";
+				})
+				.attr('x', x_2/2)
+				.attr('y', y_1big)
+				.attr('transform', 'rotate(' + bigAngle + ')')
+			})
+			.transition()
+				.delay(transitionTime)
+				.duration(labelTransitionTime)
+			.style('opacity', 1)
+		
+
+	d3.select('.changelabel--rest')
+				.transition()
+			.duration(labelTransitionTime)
+			.each("start", function(){
+				d3.select(this)
+					.style('opacity', 0)
+			})
+			.each("end", function(){
+				d3.select(this).text( d => {
+					return "change";
+				})
+				.attr('x', x_2/2)
+				.attr('y', y_1rest)
+				.attr('transform', 'rotate(' + restAngle + ')')
+			})
+			.transition()
+				.delay(transitionTime)
+				.duration(labelTransitionTime)
+			.style('opacity', 1)
+}
+
+
 var pigChart = function(){
 
 	var margin = {top: 20, right: 20, bottom: 70, left: 80},
@@ -25,8 +117,6 @@ var pigChart = function(){
 	var component = function(selection){
 		selection.each(function(data) {
 			let container = d3.select(this);
-
-			// container.selectAll('*').remove();
 			
 			outerWidth = container.node().offsetWidth;
 			width = outerWidth - margin.left - margin.right;
@@ -130,13 +220,21 @@ var pigChart = function(){
 					.transition()
 						.duration(transitionTime)
 					.call(yAxis);
-			} else {console.log('subsequent time');}
-			
+			} else {
+				chart.select('svg')
+					.attr("width", outerWidth)
+					.attr("height", outerHeight);
+			}
+
 			var rebars = chart.selectAll(".chart-inner .bar-wrapper").data(data, d => d.year)
-				
+				.attr('transform', function(d,i){
+					return "translate(" + x(d.year) + ",0)";
+				});
+
 			// Size and transition the bars
 			rebars.selectAll('.bar--big')
 				.data(d => [d])
+				.attr("width", x.rangeBand())
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => height - y(d.big))
@@ -144,6 +242,7 @@ var pigChart = function(){
 	
 			rebars.selectAll('.bar--rest')
 				.data(d => [d])
+				.attr("width", x.rangeBand())
 				.transition()
 					.duration(transitionTime)
 				.attr("y", d => (height - y(d.rest) - y(d.big)))
@@ -153,6 +252,7 @@ var pigChart = function(){
 			// Populate and place the text labels
 			rebars.selectAll ('.bar-label--big')
 				.data(d => [d])
+				.attr("x", x.rangeBand()/2)
 				.transition()
 					.duration(labelTransitionTime)
 					.each("start", function(){
@@ -172,6 +272,7 @@ var pigChart = function(){
 
 			rebars.selectAll ('.bar-label--rest')
 				.data(d => [d])
+				.attr("x", x.rangeBand()/2)
 				.transition()
 					.duration(labelTransitionTime)
 					.each("start", function(){
@@ -195,6 +296,14 @@ var pigChart = function(){
 				.transition()
 					.duration(transitionTime)
 				.call(yAxis);
+			
+			chart.select(".x.axis")
+				.call(xAxis);
+
+			// Draw the curvy change lines
+			container
+				.call(changeLines, x, data, height, y, transitionTime, labelTransitionTime);
+
 		});
 	};
 
