@@ -1,16 +1,31 @@
 var d3 = require('d3');
 
 var formatNumber = function(d, number){
-	if (d.type == "currency"){
-		return d3.format("$,")(number);
+	if(window.innerWidth > 767){
+		// If not mobile width
+		if (d.type == "currency"){
+			// If it's money on desktop
+			return d3.format("$,")(number);
+		}		
 	} else {
-		return d3.format(",")(number);
+		if (number > 1000000){
+			// If it's mobile width, let's shorten millions
+			if (d.type == "currency"){
+				// If it's mobile currency, add "$"
+				return "$" + d3.round((number/1000000), 1) + "M";
+			} else {
+				// If mobile but not monty, then just shorten the millions
+				return d3.round((number/1000000), 1) + "M";
+			}	
+		}
 	}
+	// If nothing else, just return the value with commas. This also will serve desktop non money
+	return d3.format(",")(number);
+
 }
 
 
 var changeLines = function(selection, x, data, height, y, transitionTime, labelTransitionTime){
-	console.log('changelines', x)
 	var barWidth = x.rangeBand(),
 		lastIndex = data.length-1,
 		x_1 = x(data[0].year) + barWidth/2,
@@ -21,7 +36,6 @@ var changeLines = function(selection, x, data, height, y, transitionTime, labelT
 		y_2big = height - y(data[lastIndex].big),
 		bigAngle = Math.atan2(y_2big - y_1big, x_2 - x_1) * 180 / Math.PI,
 		restAngle = Math.atan2(y_2rest - y_1rest, x_2 - x_1) * 180 / Math.PI;
-		console.log(bigAngle, restAngle);	
 
 	// First, if needed, append the paths and associated labels
 
@@ -34,7 +48,6 @@ var changeLines = function(selection, x, data, height, y, transitionTime, labelT
 			.append('text')
 				.classed('changelabel--rest', true)
 				.text('XXX');
-		console.log('rest');
 	}
 
 	if (selection.select('.chart-inner .changeline--big').size() < 1){
@@ -259,7 +272,7 @@ var pigChart = function(){
 						d3.select(this).style('opacity', 0)
 					})
 					.each("end", function(){
-						d3.select(this).text( d => {
+						d3.select(this).text( (d,i) => {
 							return formatNumber(d, d.big);
 						})
 						.attr("y", d => height - y(d.big) + 30);
@@ -270,7 +283,7 @@ var pigChart = function(){
 					.style('opacity', 1)
 					.attr("y", d => height - y(d.big) + 3);
 
-			rebars.selectAll ('.bar-label--rest')
+			rebars.selectAll('.bar-label--rest')
 				.data(d => [d])
 				.attr("x", x.rangeBand()/2)
 				.transition()
