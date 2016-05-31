@@ -74,21 +74,13 @@ module.exports = function(grunt) {
     js: {
       files: ['js/src/**/*.js'],
       tasks: ['minifyify:app']
+    },
+
+    vendor_css:{
+      files:['css/src/**/*.css'],
+      tasks:['cssmin']
     }
   };
-
-  config.concat = {
-    options:{
-      sourceMap:true
-    },
-    vendor:{
-      src:[ 's3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css',
-            'node_modules/leaflet.markercluster/dist/MarkerCluster.css', 
-            'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
-            'css/leaflet.css'],
-      dest:'css/vendor.css'
-    }
-  }
 
   config.notify_hooks = {
     options:{
@@ -98,17 +90,35 @@ module.exports = function(grunt) {
     }
   }
 
+config.cssmin = {
+  options: {
+    shorthandCompacting: false,
+    sourceMap:true,
+    roundingPrecision: -1
+  },
+  target: {
+    files: {
+      'css/vendor.min.css': [ 
+        'css/src/skeleton.css',
+        'node_modules/leaflet.markercluster/dist/MarkerCluster.css', 
+        'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
+        'css/src/leaflet.css'
+      ]
+    }
+  }
+}
+
   grunt.initConfig(config);
   
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-minifyify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
 
   var defaultTasks = [];
  
-  defaultTasks.push('concat');
+  defaultTasks.push('cssmin');
   defaultTasks.push('sass');
   defaultTasks.push('minifyify');
   
