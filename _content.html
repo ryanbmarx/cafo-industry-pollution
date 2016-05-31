@@ -55,7 +55,8 @@
     /*  TODO: Bundle vendor CSS into a single file */
     var CSS = [
     "//s3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css",
-    "//{{ ROOT_URL }}/css/leaflet.css",
+    // "//{{ ROOT_URL }}/css/leaflet.css",
+    "//{{ ROOT_URL }}/css/vendor.css",
     "//{{ ROOT_URL }}/css/styles.css"
     ];    
     CSS.forEach(function(url) {
@@ -118,7 +119,7 @@
       buttons:document.getElementsByClassName('chart-button'),
       chart:pigChart
    });
-   // TRIGGER CLICK EVENT WILL RENDER CHART
+  // TRIGGER CLICK EVENT WILL RENDER CHART
   document.querySelector(".chart-button[data-chart='pigs']").click();
   
 

@@ -18,7 +18,8 @@ module.exports = function(grunt) {
     'd3', 
     'leaflet',
     'jquery',
-    'lodash/debounce'
+    'lodash/debounce',
+    'leaflet.markercluster'
   ];
 
   config.minifyify = {
@@ -76,6 +77,18 @@ module.exports = function(grunt) {
     }
   };
 
+  config.concat = {
+    options:{
+      sourceMap:true
+    },
+    vendor:{
+      src:[ 's3.amazonaws.com/media.apps.chicagotribune.com/graphics-toolbox/skeleton.css',
+            'node_modules/leaflet.markercluster/dist/MarkerCluster.css', 
+            'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css',
+            'css/leaflet.css'],
+      dest:'css/vendor.css'
+    }
+  }
 
   config.notify_hooks = {
     options:{
@@ -91,9 +104,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-minifyify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-notify');
+  grunt.loadNpmTasks('grunt-contrib-concat');
 
   var defaultTasks = [];
  
+  defaultTasks.push('concat');
   defaultTasks.push('sass');
   defaultTasks.push('minifyify');
   
