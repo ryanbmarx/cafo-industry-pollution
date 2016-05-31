@@ -3,6 +3,7 @@ var L = require('leaflet');
 require('./stamen-tiles');
 var d3 = require('d3');
 var choroplethScale = require('./choropleth-scale');
+require('leaflet.markercluster');
 
 function hexToRgb(hex) {
 	// Found here: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
@@ -79,7 +80,7 @@ var CafoMap = function(options){
 			app.profileData = data;
 
 			// This layer group will let me iterate over markers and style them.
-			var markers = L.layerGroup();
+			app.markers = L.layerGroup();
 
 			app.profileData.forEach( (pollutionEvent,i) => {
 				// The first row of points data actually is labels/descriptions from
@@ -93,17 +94,17 @@ var CafoMap = function(options){
 						app.stylePollutionEvents(app)
 						).on('click', function(e){
 							app.showPollutionProfileByIndex(i);
-							markers.eachLayer(marker => {
-								marker.setStyle(app.stylePollutionEvents(app));
-							});
-							e.target.setStyle(app.styleActivePollutionEvents(app))
+							// markers.eachLayer(marker => {
+							// 	marker.setStyle(app.stylePollutionEvents(app));
+							// });
+							// e.target.setStyle(app.styleActivePollutionEvents(app))
 							// clickHandler(e, app);
 						});
 						marker.profileId = pollutionEvent.id;
-						marker.addTo(markers);
+						marker.addTo(app.markers);
 				}
 			});
-			markers.addTo(map);
+			app.markers.addTo(map);
 
 		});	
 	});		
@@ -112,21 +113,30 @@ var CafoMap = function(options){
 CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	var app = this;
+	let markers = app.markers;
 	app.activeIndex = i;
 
 	let profileContainer = app.options.profileOptions.profileContainer;
 	// Take the profile data (array of objects) and filter
 	// down to just the one we want, storing it in variable "p"
 	let p = app.profileData[app.activeIndex];
-	// Fill out the profile content.
 	// TODO: Design this with the data we want and design it nicely.
+
+	markers.eachLayer(marker => {
+		if (marker.profileId == 'profile' + app.activeIndex){
+			marker.setStyle(app.styleActivePollutionEvents(marker));
+		} else {
+			marker.setStyle(app.stylePollutionEvents(marker));
+		}
+	});
 	
+
+	// Fill out the profile content.
 	let profileText = `
 	<p><em><small>${p.id}</small></em></p>
 	<h2>${p.operator}</h2>
 	<p class='address'>${p.town}, ${p.county} County</p>
-	<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>
-	`;
+	<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>`;
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText;
@@ -138,7 +148,6 @@ CafoMap.prototype.showNextPollutionEvent = function(){
 	if(nextIndex >= this.profileData.length){
 		nextIndex = 0;
 	}
-
 	this.showPollutionProfileByIndex(nextIndex);
 }
 
@@ -183,14 +192,6 @@ CafoMap.prototype.stylePollutionEvents = function(feature){
 	};
 }
 
-var clickHandler = function(e){
-	console.log('handling clicks');
-	var app = this;
-	// var icons = document.getElementsByClassName('profile-marker');
-	// e.target.setStyle(app.styleActivePollutionEvents(app));
-
-
-}
 
 CafoMap.prototype.styleActivePollutionEvents = function(feature){
 	var app = this;
