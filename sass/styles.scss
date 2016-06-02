@@ -6,6 +6,31 @@
 	font-size:$size;
 }
 
+@mixin button(){
+	@include sans-serif-text(10px);
+	color:black;
+	display: block;
+	margin: 10px 0;
+	padding:15px 0;
+	background-color:#eee;
+	text-align: center; 
+	cursor:pointer;
+	color:black;
+	transition:all 150ms;
+
+	&.active, &.active:hover{
+		background-color:$highlight_color;
+		font-weight: bold;
+		color:white;
+		transition:all 150ms;
+	}
+
+	&:hover{
+		opacity: .8;
+		color:black;
+	}
+}
+
 $highlight_color:$trib_orange;
 
 @import "legends_and_keys";
@@ -15,6 +40,25 @@ $highlight_color:$trib_orange;
 // ##############
 
 .show-phone{display:none;}
+
+
+// ##############
+// INITIAL VISIBILITY
+// ##############
+
+.pigchart, .pollution-map{
+	opacity:0;
+}
+
+.buttons{
+	display:flex;
+	justify-content:space-between;
+	flex-wrap:wrap;
+	.button{
+		@include button();
+		width:48%;
+	}	
+}
 
 
 // ##############
@@ -33,6 +77,25 @@ $highlight_color:$trib_orange;
 // ##############
 #pig-chart-container{
 
+}
+
+.pigchart{
+	position: relative;
+}
+
+.trb_mainContent .chart-annotation {
+	padding: 10px;
+	background: #eee;
+	// border: 1px solid #eee;
+	width: 280px;
+	position: absolute;
+	transition: all 300ms;
+	p{
+		font-size: 25px;
+		line-height: 1.3em;
+		font-style: italic;
+		margin:0;	
+	}
 }
 
 .bar{
@@ -91,54 +154,27 @@ $highlight_color:$trib_orange;
 	flex-wrap:wrap;
 
 	.button{
-		@include sans-serif-text(10px);
-		color:black;
-		display: block;
-		margin: 10px 0;
-		padding:15px 0;
-		background-color:#eee;
-		text-align: center; 
-		cursor:pointer;
-		color:black;
-		transition:all 150ms;
+		@include button();
 		
 		&.map-button{width:18%}
 		&.chart-button{width:32%}
 		&.profile-button{
-			
 			width:49%;
 			&[data-direction='next']{
 				border-radius: 0 5px 5px 0;
 				&:after{
 					@extend %profile-button-carat;
 					content:'w';
-					}}
-
-					&[data-direction='back']{
-						border-radius: 5px 0 0 5px;
-						&:before{
-							@extend %profile-button-carat;
-							content:'v';
-						}
-					}
 				}
-				&:first-child{
-		}
+			}
 
-		&:last-child{
-
-		}
-
-		&.active, &.active:hover{
-			background-color:$highlight_color;
-			font-weight: bold;
-			color:white;
-			transition:all 150ms;
-		}
-
-		&:hover{
-			opacity: .8;
-			color:black;
+			&[data-direction='back']{
+				border-radius: 5px 0 0 5px;
+				&:before{
+					@extend %profile-button-carat;
+					content:'v';
+				}
+			}
 		}
 	}
 }
@@ -159,7 +195,6 @@ $highlight_color:$trib_orange;
 }
 
 .profile-marker{
-	
 	&:hover{
 		fill:$trib_orange;
 	}
