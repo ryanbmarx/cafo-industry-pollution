@@ -89,7 +89,9 @@ function chapter5(app){
 	window.scrollTo(0, mapIntroTop);
 
 	// Load the next text blurb
-	d3.select('.pollution-map-intro').text(app.text.map_intro)
+	d3.select('.pollution-map-intro')
+		.transition()
+		.style('opacity',1);
 
 	window.setTimeout(function(){
 		d3.select('.pollution-map')
@@ -115,6 +117,29 @@ var TellMeAStory = function(options){
 		app.showStoryChapterByIndex(app.activeIndex);
 		// get ready for the next one by increase the active index by 1
 		app.activeIndex++;
+	});
+
+	$(app.options.dataButton).click(function(){
+		console.log('Fine, skipping the good stuff');
+		var chart = d3.select(app.options.chart);
+
+		// Show the chart
+		chart.transition().style('opacity', 1);
+
+		// render the bars
+	  	document.querySelector(".chart-button[data-chart='farms']").click();
+
+	  	// Show the map intro
+	  	d3.select('.pollution-map-intro')
+		  	.transition()
+			.style('opacity', 1);
+
+	  	// Show the map
+		d3.select('.pollution-map')
+			.transition()
+			.style('opacity', 1);
+
+
 	});
 }
 

@@ -26,17 +26,19 @@
   {% include "_chart_buttons.html" %}
   <div id='pig-chart-container' class='pigchart__container'></div>
 </section>
-<p class='pollution-map-intro'>XX</p>
+<p class='pollution-map-intro'>{{ map_intro }}</p>
 <section class='pollution-map'>
   <div class='row'>
-    <div class='six columns'>
-      <h2 class='label'>Toggle the choropleth data</h2>
-      {% include "_map_buttons.html" %}
+    <div class='three columns'>
+      <h2 class='label'>Toggle the map data</h2>
+      <div style='display:none'>
+        {% include "_map_buttons.html" %}
+      </div>
       {% include "_map_select.html" %}
       <h2 class='label'>Cycle through pollution events</h2>
       {% include "_profile_buttons.html" %}
     </div>
-    <div class='six columns'>
+    <div class='three columns'>
       <div id='legend-container' class='key'></div>
     </div>
   </div>
@@ -46,8 +48,8 @@
     </div>
     <div class='six columns'>
       <div id="profile-container" class=''>
-        <h2>{{ map_intro_header|process_text }}</h2> 
-        {{main_intro|markdown}}
+       <!--  <h2>{{ map_intro_header|process_text }}</h2> 
+        {{main_intro|markdown}} -->
       </div>
     </div>
   </div>
@@ -191,6 +193,7 @@
 
   var story = new CafoMap.TellMeAStory({
     storytellingButton:document.getElementsByClassName('button--story'),
+    dataButton:document.getElementsByClassName('button--data'),
     text:storyText,
     chart:'.pigchart',
     chartButtons:pigChartButtons,
