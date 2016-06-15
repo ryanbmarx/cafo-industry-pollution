@@ -8,6 +8,9 @@ from flask import Blueprint, g
 from tarbell.hooks import register_hook
 import json
 
+import datetime
+
+
 blueprint = Blueprint('cafo_pollution', __name__)
 
 def has_coordinates(event):
@@ -34,7 +37,12 @@ def json_generator():
 def register_json(site, output_root, extra_context):
     site.freezer.register_generator(json_generator)
 
-
+@blueprint.app_template_filter('xldate_to_datetime')
+def xldate_to_datetime(xldate):
+    temp = datetime.datetime(1900, 1, 1)
+    delta = datetime.timedelta(days=xldate)
+    retval = temp+delta
+    return retval.strftime("%B %-d, %Y")
 
 # Google spreadsheet key
 SPREADSHEET_KEY = "1XBlAN9Kcfogf5NgiPZhmr8f63uKZS_zmfyHQYCW_b68"
@@ -66,7 +74,7 @@ S3_BUCKETS = {
     # then use tarbell publish mytarget to publish to it
     
     "production": "graphics.chicagotribune.com/cafo_pollution",
-    "staging": "apps.beta.tribapps.com/cafo_pollution",
+    "staging": "apps.beta.tribapps.com/cafo_pollution"
 }
 
 # Default template variables
