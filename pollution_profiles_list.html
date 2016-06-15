@@ -1,0 +1,64 @@
+{# Override the `container` block to disable default layout. #}
+{% block container %}
+{% block content %}
+
+<style type="text/css">
+  p{
+    font-family: sans-serif;
+    font-size: 14px;
+  }
+
+  .event{
+    margin:0 auto;
+    padding:50px 0;
+    border-bottom:1px solid #222;
+    max-width: 600px;
+  }
+
+</style>
+
+{% for event in profiles[1:] %}
+<section class="event">
+  <p class='event_id'><em>Spreadsheet ID: {{ event.id }}</em></p>
+  <h2 class="event__name">{{ event.operator }}</h2>
+  <p class='event__address'>
+    <strong>CAFO location: </strong>
+    {{ event.location }}<br />
+    {{ event.town }}, {{ event.county }} County
+  </p>
+  {% if event.pollution_start and event.pollution_end %}
+    <p>
+      <strong>Pollution date:</strong> 
+      {{ event.pollution_start|float|xldate_to_datetime }} - 
+      {{ event.pollution_end|float|xldate_to_datetime }}
+    </p>
+  {% elif event.pollution_start %}
+    <p>
+      <strong>Pollution date:</strong> {{ event.pollution_start|float|xldate_to_datetime }}
+    </p>
+  {% endif %}
+
+  
+  {% if event.waterway_affected %}
+    <p><strong>Affected waterway: </strong> {{ event.waterway_affected }}</p>
+  {% endif %}
+  {% if event.fish_killed %}
+    <p><strong>No. of Fish Killed: </strong> {{ event.fish_killed }}</p>
+  {% endif %}
+  {% if event.pigs %}
+    <p><strong>No. of Pigs at CAFO: </strong> {{ event.pigs }}</p>
+  {% endif %}
+  <p><strong>What happened:</strong> {{ event.event_description }} </p>
+  <p><strong>Outcome:</strong> {{ event.event_outcome }} </p>
+</section>
+
+{% endfor %}
+
+{% endblock content %}
+{% endblock container %}
+
+{% block library_scripts %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock scripts %}
