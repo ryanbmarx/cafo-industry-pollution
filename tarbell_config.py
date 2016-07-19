@@ -28,6 +28,7 @@ def pollution_events_json():
     #This is site data
     context = site.get_context()
     data = filter_pollution_events(context['profiles'][1:])
+    print len(data)
     return json.dumps(data)
 
 def json_generator():
@@ -74,7 +75,7 @@ S3_BUCKETS = {
     # then use tarbell publish mytarget to publish to it
     
     "production": "graphics.chicagotribune.com/cafo_pollution",
-    "staging": "apps.beta.tribapps.com/cafo_pollution"
+    "staging": "apps.beta.tribapps.com/cafo/cafo_pollution"
 }
 
 # Default template variables
