@@ -10,53 +10,40 @@
   TODO: Make mixin for button styling
 
 -->
+<div class='graphic-wrapper'>
+  {{ main_intro|markdown }}
 
-{{ main_intro|markdown }}
-<div class='buttons buttons--main'>
-  <a class='button button--story'>TELL ME A STORY</a>
-  <a class='button button--data'>JUST SHOW ME THE DATA</a>
+
+  <!-- <span style='font-family:trb_Icons;font-size: 20px;'>
+    
+  `1234567890-= qwertyuiop[]\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}}|ASDFGHJKL:"ZXCVBNM<>?'
+
+  </span> -->
+  <h2>Pollution profiles</h2>
+  <span class='pollution-map-intro'>{{ map_intro|markdown }}</span>
+  <section class='pollution-map'>
+    <div class='row'>
+      <div class='six columns'>
+        <p class='label'>Toggle the map data</p>
+        {% include "_map_select.html" %}
+        {% include "_map_legend.html" %}
+        <div id="map"></div>
+      </div>
+      <div class='six columns'>
+        <h2 class='label'>Cycle through pollution events</h2>
+        {% include "_profile_buttons.html" %}
+
+        <div id="profile-container" class=''>
+         <!--  <h2>{{ map_intro_header|process_text }}</h2> 
+          {{main_intro|markdown}} -->
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class='credits'>
+   <p>{{ sources }}</p>
+  </section>
 </div>
-
-<!-- <span style='font-family:trb_Icons;font-size: 20px;'>
-  
-`1234567890-= qwertyuiop[]\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}}|ASDFGHJKL:"ZXCVBNM<>?'
-
-</span> -->
-<section class='pigchart'>
-  {% include "_chart_buttons.html" %}
-  <div id='pig-chart-container' class='pigchart__container'></div>
-</section>
-<p class='pollution-map-intro'>{{ map_intro }}</p>
-<section class='pollution-map'>
-  <div class='row'>
-    <div class='three columns'>
-      <h2 class='label'>Toggle the map data</h2>
-      <div style='display:none'>
-        {% include "_map_buttons.html" %}
-      </div>
-      {% include "_map_select.html" %}
-      <h2 class='label'>Cycle through pollution events</h2>
-      {% include "_profile_buttons.html" %}
-    </div>
-    <div class='three columns'>
-      <div id='legend-container' class='key'></div>
-    </div>
-  </div>
-  <div class='row'>
-    <div class='six columns'>
-      <div id="map"></div>
-    </div>
-    <div class='six columns'>
-      <div id="profile-container" class=''>
-       <!--  <h2>{{ map_intro_header|process_text }}</h2> 
-        {{main_intro|markdown}} -->
-      </div>
-    </div>
-  </div>
-</section>
-<section class='credits'>
- <p>{{ sources }}</p>
-</section>
 {% endblock content %}
 {% endblock container %}
 
@@ -80,41 +67,7 @@
       document.head.appendChild(link);
     });
 
-  /* 
-  This little lookup table provides the labels and sublabels for the choropleth data.
-  */
-  {# TODO: Use custom filter+python to make JSON var #}
-  var pigsOverTimeData = [
-  {% for row in pigs_over_time %}
-  {
-    year:{{ row.year }},
-    farms:{
-      type: "integer",
-      big: {{ row.farms_big }},
-      rest: {{ row.farms }}
-    },
-    pigs:{
-      type: "integer",
-      big: {{ row.pigs_big }},
-      rest: {{ row.pigs }}
-    },
-    value:{
-      type: "currency",
-      big: {{ row.value_big }},
-      rest: {{ row.value }}
-    }
-  }{% if not loop.last %}, {% endif %}
-  {% endfor %}
-  ];
-
-  var storyText = {
-    {% for blurb in story_text %}
-      {{ blurb.keyword }}:"{{ blurb.text }}"{% if not loop.last %}, {% endif %}
-    {% endfor %}
-  };
-  /* 
-  This little lookup table provides the labels and sublabels for the choropleth data.
-  */
+  
 
   var dataLabels = {
     {% for row in map_buttons %}
@@ -127,19 +80,6 @@
   };
 
   window.onload = function(){
-    var pigChart = new CafoMap.PigsOverTimeChart ({
-      container:document.getElementById('pig-chart-container'),
-      data: pigsOverTimeData,
-      category: "pigs" // can be "value", "pigs" or "farms"
-    });
-
-    var pigChartButtons = new CafoMap.PigChartButtons({
-      buttons:document.getElementsByClassName('chart-button'),
-      chart:pigChart
-    });
-  // TRIGGER CLICK EVENT WILL RENDER CHART
-  // document.querySelector(".chart-button[data-chart='pigs']").click();
-  
 
   /* Build the actual map here */
   var map = new CafoMap.CafoMap({
@@ -157,14 +97,15 @@
       strokeColor:'black',
       fill:true,
       fillColor: '#000000',
-      fillOpacity: .8,
+      fillOpacity: .4,
       radius:5,
       label:"One pollution event",
       profileContainer:document.getElementById('profile-container'),
       active:{
         /* Styles on click */
         fillColor: '#ffff00',
-        strokeWidth:3
+        strokeWidth:2,
+        fillOpacity: 1
       },
       hover:{
         /* Styles on click */
@@ -176,10 +117,10 @@
   });
 
   /* Build the map buttons here */
-  var mapButtons = new CafoMap.CafoMapButtons({
-    buttons:document.getElementsByClassName('map-button'),
-    map:map
-  });
+  // var mapButtons = new CafoMap.CafoMapButtons({
+  //   buttons:document.getElementsByClassName('map-button'),
+  //   map:map
+  // });
   /* Build the <select> here */
   var mapSelect = new CafoMap.CafoMapSelect({
     menu:document.getElementsByClassName('map-select'),
@@ -191,16 +132,16 @@
     map:map
   });
 
-  var story = new CafoMap.TellMeAStory({
-    storytellingButton:document.getElementsByClassName('button--story'),
-    dataButton:document.getElementsByClassName('button--data'),
-    text:storyText,
-    chart:'.pigchart',
-    chartButtons:pigChartButtons,
-    timeInterval:'5000',
-    fadedBackground: "rgba(255, 255, 255, .9)",
-    boxShadow: "3px 3px 5px rgba(0,0,0,.15)"
-  })
+  // var story = new CafoMap.TellMeAStory({
+  //   storytellingButton:document.getElementsByClassName('button--story'),
+  //   dataButton:document.getElementsByClassName('button--data'),
+  //   text:storyText,
+  //   chart:'.pigchart',
+  //   chartButtons:pigChartButtons,
+  //   timeInterval:'5000',
+  //   fadedBackground: "rgba(255, 255, 255, .9)",
+  //   boxShadow: "3px 3px 5px rgba(0,0,0,.15)"
+  // })
 
 };
 
