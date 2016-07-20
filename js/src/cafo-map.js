@@ -1,19 +1,30 @@
 var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
-var d3 = require('d3');
+import {format} from 'd3-format'
 var choroplethScale = require('./choropleth-scale');
-// require('leaflet.markercluster');
 
-// function hexToRgb(hex) {
-// 	// Found here: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
-// 	var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-// 	return result ? {
-// 		r: parseInt(result[1], 16),
-// 		g: parseInt(result[2], 16),
-// 		b: parseInt(result[3], 16)
-// 	} : null;
-// }
+var formatNumber = function(number){
+	//Sometimes the numbers are served up from the spreadsheet as strings. 
+	// Other times, they are actual numbers needing formatting
+	var retval = number;
+	if (typeof(number) == "string"){
+		return retVal;	
+	}
+	return format(",")(number);
+}
+
+var formatExcelDate = function(number){
+		var options = {
+			month:'short',
+			day:"numeric",
+			year:"numeric"
+		};
+
+		var newDate = new Date((number - (25567 + 1))*86400*1000)
+		newDate = newDate.toLocaleDateString("en-us", options);
+		return newDate;
+}
 
 
 function getScales(counties) {
@@ -142,12 +153,11 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	let dates = "";
 	if (p.hasOwnProperty('pollution_start')){
-		dates = `<p class='profile__date'><strong>Date: </strong> ${p.pollution_start}`;
+		dates = `<p class='profile__date'><strong>Date: </strong> ${formatExcelDate(p.pollution_start)}`;
 
 		if (p.hasOwnProperty('pollution_end')){
-			dates = dates + ` - ${p.pollution_end}`;
+			dates = dates + ` - ${formatExcelDate(p.pollution_end)}`;
 		}
-		dates = dates + " <span style='color:white;background:red;';>(needs formatting)</span></p>";
 	}
 
 	// Fill out the profile content.
@@ -157,8 +167,8 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	<p class='profile__address'>${p.county} County</p>
 	${dates}`;
 	profileText = profileText + (p.hasOwnProperty('waterway_affected') ? `<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>` : "");
-	profileText = profileText + (p.hasOwnProperty('pigs') ? `<p><strong>Number of pigs: </strong>${p.pigs}<span style='color:white;background:red;';>(needs formatting)</span></p>` : "");
-	profileText = profileText + (p.hasOwnProperty('fish_killed') ? `<p><strong>Fish killed: </strong>${p.fish_killed}<span style='color:white;background:red;';>(needs formatting)</span></p>` : "");
+	profileText = profileText + (p.hasOwnProperty('pigs') ? `<p><strong>Number of pigs: </strong>${formatNumber(p.pigs)}</p>` : "");
+	profileText = profileText + (p.hasOwnProperty('fish_killed') ? `<p><strong>Fish killed: </strong>${formatNumber(p.fish_killed)}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText;
@@ -240,86 +250,6 @@ CafoMap.prototype.updateMapData = function(property){
 	// app.renderLegend(app._propertyToMap);
 }
 
-var formatNumbers = function(numbers, formatType){
-	var retVal = [];
-	if (formatType == "dollars"){
-		numbers.forEach(number => {
-			// TODO: Format $$ with commas
-			retVal.push(number);
-		});
-	} if(formatType == "integer"){
-		numbers.forEach(number => {
-			// TODO: Format as integer, with commas
-			retVal.push(number);
-		});
-	} else {
-		// TODO: Defaults to regular 1-decimal-point numbers with commas
-		numbers.forEach(number => {
-			retVal.push(number);
-		});
-	}
-	return retVal;
-}
 
-CafoMap.prototype.renderLegend = function(property){
-	// var app = this;
-	// var dataLookup = app.options.dataLabelLookup[property],
-	// mapRange = app.scales[property].range(),
-	// opacitiesText = "",
-	// countyBackgroundFill = hexToRgb(app.options.countyOptions.fillColor),
-	// thresholds = formatNumbers(app.scales[property].quantiles(), dataLookup.type),
-	// thresholdText = "",
-	// profileOptions = app.options.profileOptions,
-	// profilesFill = hexToRgb(profileOptions.fillColor);
-
-	// for (var i=0;i<mapRange.length;i++){
-	// 	if (thresholds[i] == undefined){
-	// 			// TODO: Format and style these figures.
-	// 			thresholdText = "More than " + thresholds[i-1];
-	// 		} else if ( i === 0){
-	// 			// TODO: Format and style these figures.
-	// 			thresholdText = "0 to " + thresholds[i];
-	// 		} else {
-	// 			// TODO: Format and style these figures.
-	// 			thresholdText = thresholds[i-1] + " to " + thresholds[i];
-	// 		}
-	// 		opacitiesText += `
-	// 		<dt>
-	// 		<span class='box' style='background:rgba(
-	// 		${countyBackgroundFill.r},
-	// 		${countyBackgroundFill.g},
-	// 		${countyBackgroundFill.b},
-	// 		${mapRange[i]}
-	// 		);'></span>
-	// 		</dt>
-	// 		<dd>
-	// 		${thresholdText}
-	// 		</dd>
-	// 		`;
-	// 	}
-	// 	var pollutionEventText = `
-	// 	<hr class='legend__divider'>
-	// 	<dt>
-	// 	<span class='box circle' style='background:rgba(
-	// 	${profilesFill.r},
-	// 	${profilesFill.g},
-	// 	${profilesFill.b},
-	// 	${profileOptions.fillOpacity}
-	// 	);border:${profileOptions.strokeWidth}px solid ${profileOptions.strokeColor};'></span>
-	// 	</dt>
-	// 	<dd>${profileOptions.label}</dd>
-	// 	`;	
-	// 	var legendOutput = `
-	// 	<div class='legend'>
-	// 	<h4 class='label'>${dataLookup.primary}</h4>
-	// 	<h5 class='sublabel'>${dataLookup.secondary}</h5>
-	// 	<dl>
-	// 	${opacitiesText}
-	// 	${pollutionEventText}
-	// 	</dl>
-	// 	</div>
-	// 	`;
-	// 	// app.options.legendContainer.innerHTML = legendOutput;
-	}
 
 	module.exports = CafoMap;

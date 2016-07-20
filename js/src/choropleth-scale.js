@@ -1,8 +1,8 @@
-var d3 = require('d3');
+import {scaleQuantile} from 'd3-scale'
 
 function choropolethScale(){
 	
-	var realScale = d3.scale.quantile();
+	var realScale = scaleQuantile();
 
 	function scale(value){
 		if (!value) {

@@ -15,11 +15,9 @@ module.exports = function(grunt) {
   };
 
   var vendorPackages = [
-    'd3', 
+    'd3-format', 
     'leaflet',
-    'jquery',
-    'lodash/debounce',
-    'leaflet.markercluster'
+    'jquery'
   ];
 
   config.minifyify = {
