@@ -31,9 +31,58 @@
 	}
 }
 
+
+/* Pulse Grow */
+@keyframes hvr-pulse-grow {
+  0% {
+    transform: scale(1);
+  }
+
+   50% {
+    transform: scale(1.1);
+  }
+
+   100% {
+    transform: scale(1);
+  }
+}
+
+
+@mixin pulse_grow_base_state(){
+  // display: inline-block;
+  vertical-align: middle;
+  transform: translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  backface-visibility: hidden;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@mixin pulse_grow_animation($duration:300ms, $iterations:1){
+  animation-name: hvr-pulse-grow;
+  animation-duration: $duration;
+  animation-timing-function: linear;
+  animation-iteration-count: $iterations;
+  animation-direction: alternate;
+}
+
 $highlight_color:$trib_orange;
 
 @import "legends_and_keys";
+
+// Map legend
+  .key__bar{
+    height:25px;
+    border:1px solid #eee;
+    background:linear-gradient(to right, white, $trib_red1);
+    margin:15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width:100%;
+  span{
+    padding: 0 10px;
+  }
+}
 
 // ##############
 // Utilities
@@ -42,12 +91,29 @@ $highlight_color:$trib_orange;
 .show-phone{display:none;}
 
 
+.graphic-wrapper{
+	max-width:650px;
+	margin:auto;
+}
+
 // ##############
 // INITIAL VISIBILITY
 // ##############
 
-.pigchart, .pollution-map-intro, .pollution-map{
-	opacity:0;
+
+
+%profile-marker{
+	visibility:visible;
+}
+
+.profile-marker{
+	&--inactive{
+		@extend %profile-marker;
+	}
+	&--active{
+		@extend %profile-marker;
+		@include pulse_grow_animation(500ms, infinite);
+	}
 }
 
 .buttons{
@@ -58,6 +124,19 @@ $highlight_color:$trib_orange;
 		@include button();
 		width:48%;
 	}	
+}
+
+.next-button{
+	@include button();
+	width:100px;
+	height:100px;
+	border-radius:50%;
+	padding:0;
+	box-shadow:0 0 5px rgba(0,0,0,.2);
+	position:fixed;
+	bottom:0;
+	right:0;
+	margin:0 50px 50px 0;
 }
 
 
@@ -147,6 +226,8 @@ $highlight_color:$trib_orange;
 	border-radius: 50%;
 	padding: 4px;
 }
+
+.map-select{width:100%}
 
 .trb_mainContent .nav-wrapper{
 	display:flex;
