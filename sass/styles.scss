@@ -34,40 +34,26 @@
 }
 
 
-/* Pulse Grow */
-@keyframes hvr-pulse-grow {
-  0% {
-    transform: scale(1);
-  }
-
-   50% {
-    transform: scale(1.1);
-  }
-
-   100% {
-    transform: scale(1);
-  }
+@keyframes pulse {
+  from { stroke-width: 1; }
+  to { stroke-width: 4; }
 }
 
 
-@mixin pulse_grow_base_state(){
-  // display: inline-block;
-  vertical-align: middle;
-  transform: translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  backface-visibility: hidden;
-  -moz-osx-font-smoothing: grayscale;
-}
 
-@mixin pulse_grow_animation($duration:300ms, $iterations:1){
-  animation-name: hvr-pulse-grow;
-  animation-duration: $duration;
+@mixin pulse_animation(){
+  animation-name: pulse;
+  animation-duration: 500ms;
   animation-timing-function: linear;
-  animation-iteration-count: $iterations;
+  animation-iteration-count: infinite;
   animation-direction: alternate;
 }
 
 $highlight_color:$trib_orange;
+
+.pulse{
+	@include pulse_animation();
+}
 
 @import "legends_and_keys";
 
@@ -116,7 +102,7 @@ $highlight_color:$trib_orange;
 	}
 	&--active{
 		@extend %profile-marker;
-		@include pulse_grow_animation(500ms, infinite);
+		@include pulse_animation();
 	}
 }
 

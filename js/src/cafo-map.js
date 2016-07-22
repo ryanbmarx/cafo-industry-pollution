@@ -1,13 +1,14 @@
 var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
-import {format} from 'd3-format'
+import {format} from 'd3-format';
+// var d3 = require('d3-selection');
+
 var choroplethScale = require('./choropleth-scale');
 
 var formatNumber = function(number){
 	//Sometimes the numbers are served up from the spreadsheet as strings. 
 	// Other times, they are actual numbers needing formatting
-	console.log('formatting', number, "it is a ", typeof(number));
 	if (typeof(number) == "number"){
 		return format(",")(number);
 	}
@@ -114,7 +115,6 @@ var CafoMap = function(options){
 						).on('click', function(e){
 							app.showPollutionProfileByIndex(i);
 						});
-						console.log("Now loading ", pollutionEvent.id)
 						pollutionEvent.marker.profileId = pollutionEvent.id;
 						pollutionEvent.marker.addTo(app.markers);
 				}
@@ -134,11 +134,12 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	// Take the profile data (array of objects) and filter
 	// down to just the one we want, storing it in variable "p"
 	let p = app.profileData[app.activeIndex];
-	console.log(p);
 	// TODO: Design this with the data we want and design it nicely.
 		console.log("Now showing: ",i, app.activeIndex);
 	
 	if (this.activeMarker){
+		this.activeMarker.options.className = "pulse";
+		console.log(this.activeMarker.options.className);
 		this.activeMarker.setStyle(app.stylePollutionEvents())
 	}
 
@@ -149,7 +150,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	*/
 	this.activeMarker = p.marker;
 	this.activeMarker.setStyle(app.styleActivePollutionEvents());
-
 	this.markers.removeLayer(this.activeMarker);
 	this.markers.addLayer(this.activeMarker);
 
@@ -174,7 +174,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText;
-	console.log(profileText);
 }
 
 CafoMap.prototype.showNextPollutionEvent = function(){
