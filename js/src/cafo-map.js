@@ -2,6 +2,7 @@ var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
 import {format} from 'd3-format';
+var _ = require('lodash/collection');
 
 var choroplethScale = require('./choropleth-scale');
 
@@ -90,7 +91,8 @@ var CafoMap = function(options){
 		// Add pollution profiles to the map.
 		$.getJSON(options.dataRootUrl + "pollution-events.json", function(data){
 			
-			app.profileData = data;
+			app.profileData = _.sortBy(data, 'pollution_start');
+			console.log(data, app.profileData);
 
 			// This layer group will let me iterate over markers and style them.
 			app.markers = L.layerGroup({
