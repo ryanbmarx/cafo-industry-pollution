@@ -11,31 +11,23 @@
 
 -->
 <div class='graphic-wrapper'>
-  {{ main_intro|markdown }}
-
-
-  <!-- <span style='font-family:trb_Icons;font-size: 20px;'>
-    
-  `1234567890-= qwertyuiop[]\asdfghjkl;'zxcvbnm,./~!@#$%^&*()_+QWERTYUIOP{}}|ASDFGHJKL:"ZXCVBNM<>?'
-
-  </span> -->
-  <h2>Pollution profiles</h2>
   <span class='pollution-map-intro'>{{ map_intro|markdown }}</span>
   <section class='pollution-map'>
     <div class='row'>
       <div class='six columns'>
-        <p class='label'>Toggle the map data</p>
+        <p class='label'>{{ map_menu_intro_label|process_text }}</p>
+        <div class="map_menu_intro">
+          {{ map_menu_intro|markdown }}
+        </div>
         {% include "_map_select.html" %}
         {% include "_map_legend.html" %}
         <div id="map"></div>
       </div>
       <div class='six columns'>
-        <h2 class='label'>Cycle through pollution events</h2>
+        <h2 class='label'>{{ pollution_events_label }}</h2>
         {% include "_profile_buttons.html" %}
 
         <div id="profile-container" class=''>
-         <!--  <h2>{{ map_intro_header|process_text }}</h2> 
-          {{main_intro|markdown}} -->
         </div>
       </div>
     </div>

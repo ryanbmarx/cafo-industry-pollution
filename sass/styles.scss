@@ -17,17 +17,19 @@
 	cursor:pointer;
 	color:black;
 	transition:all 150ms;
-
+	text-decoration:none;
 	&.active, &.active:hover{
 		background-color:$highlight_color;
 		font-weight: bold;
 		color:white;
 		transition:all 150ms;
+		text-decoration:none;
 	}
 
 	&:hover{
 		opacity: .8;
 		color:black;
+		text-decoration:none;
 	}
 }
 
@@ -83,6 +85,8 @@ $highlight_color:$trib_orange;
     padding: 0 10px;
   }
 }
+
+.trb_mainContent .map_menu_intro p{ @include sans-serif-text(14px);}
 
 // ##############
 // Utilities
@@ -286,6 +290,10 @@ $highlight_color:$trib_orange;
 	.address{
 		font-style:italic;
 	}
+}
+
+.trb_mainContent .credits{
+	@include sans-serif-text(12px);
 }
 
 @media all and (max-width:700px){
