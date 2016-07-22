@@ -100,8 +100,14 @@ var CafoMap = function(options){
 
 			var markerLookup = {}
 
-			var pollutionIcon = L.divIcon({
-				className:'profile-marker'
+			app.pollutionIcon = L.divIcon({
+				className:'profile-marker',
+				html:"<span class='ring'></span>"
+			});
+
+			app.activePollutionIcon = L.divIcon({
+				className:'profile-marker--active',
+				html:"<span class='ring'></span>"
 			});
 
 			app.profileData.forEach( (pollutionEvent,i) => {
@@ -116,7 +122,7 @@ var CafoMap = function(options){
 					pollutionEvent.marker = L.marker(
 						{lat:parseFloat(pollutionEvent.lat), 
 							lng:parseFloat(pollutionEvent.lng)},
-							{icon:pollutionIcon}
+							{icon:app.pollutionIcon}
 						).on('click', function(e){
 							app.showPollutionProfileByIndex(i);
 						});
@@ -139,11 +145,12 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	// Take the profile data (array of objects) and filter
 	// down to just the one we want, storing it in variable "p"
 	let p = app.profileData[app.activeIndex];
-	// TODO: Design this with the data we want and design it nicely.
+	
 		console.log("Now showing: ",i, app.activeIndex);
 	
+	// Start by removing any existing active marker
 	if (this.activeMarker){
-		// this.activeMarker.setStyle(app.stylePollutionEvents())
+		this.activeMarker.setIcon(app.pollutionIcon);
 	}
 
 	/*
@@ -152,10 +159,11 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		Here, we take our active marker, remove it, then redraw it so that it is last and, consequently, on top.
 	*/
 	this.activeMarker = p.marker;
-	// this.activeMarker.setStyle(app.styleActivePollutionEvents());
-	console.log(this.activeMarker);
-	this.markers.removeLayer(this.activeMarker);
-	this.markers.addLayer(this.activeMarker);
+
+	this.activeMarker.setIcon(app.activePollutionIcon);
+
+	// this.markers.removeLayer(this.activeMarker);
+	// this.markers.addLayer(this.activeMarker);
 
 	let dates = "";
 	if (p.hasOwnProperty('pollution_start')){
@@ -168,7 +176,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	// Fill out the profile content.
 	let profileText = `
-	<p><em><small>Profile: ${p.id}</small></em></p>
 	<h2>${p.operator}</h2>
 	<p class='profile__address'>${p.county} County</p>
 	${dates}`;
