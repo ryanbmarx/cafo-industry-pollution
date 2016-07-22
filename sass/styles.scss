@@ -96,13 +96,24 @@ $highlight_color:$trib_orange;
 	visibility:visible;
 }
 
+$profile_marker_dimension:20px;
 .profile-marker{
-	&--inactive{
-		@extend %profile-marker;
+
+	height:$profile_marker_dimension;	
+	width:$profile_marker_dimension;
+	border-radius: 50%;
+	border:1px solid black;
+	opacity:.4;
+	background:black;
+
+	&:hover, &--active{
+		background:yellow;
 	}
+
 	&--active{
 		@extend %profile-marker;
 		@include pulse_animation();
+		opacity:1;
 	}
 }
 

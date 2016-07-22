@@ -99,6 +99,11 @@ var CafoMap = function(options){
 			var counter = 0;
 
 			var markerLookup = {}
+
+			var pollutionIcon = L.divIcon({
+				className:'profile-marker'
+			});
+
 			app.profileData.forEach( (pollutionEvent,i) => {
 				// The first row of points data actually is labels/descriptions from
 				// spreadsheet. This uses the lat and tests if it is a number. If it is,
@@ -108,10 +113,10 @@ var CafoMap = function(options){
 				if (pollutionEvent.publish == 1){
 					counter++;
 					// if key does not exist, make new marker. Otherwise
-					pollutionEvent.marker = L.circleMarker(
+					pollutionEvent.marker = L.marker(
 						{lat:parseFloat(pollutionEvent.lat), 
 							lng:parseFloat(pollutionEvent.lng)},
-							app.stylePollutionEvents(app)
+							{icon:pollutionIcon}
 						).on('click', function(e){
 							app.showPollutionProfileByIndex(i);
 						});
@@ -138,7 +143,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		console.log("Now showing: ",i, app.activeIndex);
 	
 	if (this.activeMarker){
-		this.activeMarker.setStyle(app.stylePollutionEvents())
+		// this.activeMarker.setStyle(app.stylePollutionEvents())
 	}
 
 	/*
@@ -147,7 +152,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		Here, we take our active marker, remove it, then redraw it so that it is last and, consequently, on top.
 	*/
 	this.activeMarker = p.marker;
-	this.activeMarker.setStyle(app.styleActivePollutionEvents());
+	// this.activeMarker.setStyle(app.styleActivePollutionEvents());
 	console.log(this.activeMarker);
 	this.markers.removeLayer(this.activeMarker);
 	this.markers.addLayer(this.activeMarker);
