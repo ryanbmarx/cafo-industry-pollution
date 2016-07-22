@@ -7,11 +7,11 @@ var choroplethScale = require('./choropleth-scale');
 var formatNumber = function(number){
 	//Sometimes the numbers are served up from the spreadsheet as strings. 
 	// Other times, they are actual numbers needing formatting
-	var retval = number;
-	if (typeof(number) == "string"){
-		return retVal;	
+	console.log('formatting', number, "it is a ", typeof(number));
+	if (typeof(number) == "number"){
+		return format(",")(number);
 	}
-	return format(",")(number);
+	return number;
 }
 
 var formatExcelDate = function(number){
@@ -120,6 +120,7 @@ var CafoMap = function(options){
 				}
 			});
 			app.markers.addTo(map);
+			app.showPollutionProfileByIndex(0);
 		});	
 	});
 }
@@ -133,6 +134,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	// Take the profile data (array of objects) and filter
 	// down to just the one we want, storing it in variable "p"
 	let p = app.profileData[app.activeIndex];
+	console.log(p);
 	// TODO: Design this with the data we want and design it nicely.
 		console.log("Now showing: ",i, app.activeIndex);
 	
@@ -172,6 +174,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText;
+	console.log(profileText);
 }
 
 CafoMap.prototype.showNextPollutionEvent = function(){
