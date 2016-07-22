@@ -14,6 +14,7 @@
   "author": "Chicago Tribune News Applications",
   "license": "MIT",
   "dependencies": {
+    "d3-array": "^1.0.0",
     "d3-format": "^1.0.0",
     "d3-scale": "^1.0.1",
     "jquery": "^2.2.2",

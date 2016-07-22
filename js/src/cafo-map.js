@@ -3,6 +3,8 @@ var L = require('leaflet');
 require('./stamen-tiles');
 import {format} from 'd3-format';
 var _ = require('lodash/collection');
+import * as d3Scale from 'd3-scale';
+import * as d3Array from 'd3-array';
 
 var choroplethScale = require('./choropleth-scale');
 
@@ -102,15 +104,28 @@ var CafoMap = function(options){
 
 			var markerLookup = {}
 
+			// This is the icon to be used for all profiles, except the one being highlighted
 			app.pollutionIcon = L.divIcon({
 				className:'profile-marker',
 				html:"<span class='ring'></span>"
 			});
 
+			// This is the highlighted profile icon
 			app.activePollutionIcon = L.divIcon({
 				className:'profile-marker--active',
 				html:"<span class='ring'></span>"
 			});
+
+			// Let's build an xScale to make a little timeline of pollution events. 
+			// We only need to build it once, so we'll make it here and then pass
+			// it in to the function used to build the timelines.
+
+			var xMin = d3Array.min(app.profileData, profile => profile.pollution_start);
+			var xMax = d3Array.max(app.profileData, profile => profile.pollution_start);
+
+			app.x = d3Scale.scaleLinear()
+				.range([0,100])
+				.domain([xMin, xMax]);
 
 			app.profileData.forEach( (pollutionEvent,i) => {
 				// The first row of points data actually is labels/descriptions from
@@ -136,6 +151,31 @@ var CafoMap = function(options){
 			app.showPollutionProfileByIndex(0);
 		});	
 	});
+}
+
+function profilesTimeline(profiles, x, profileIdToHighlight){
+	var retval = `<div class='profiles-timeline'>
+						<span>2012</span>
+						<div class='timeline'>`;
+
+	profiles.forEach( (profile,i) => {
+		let addClass = "";
+		let left =x(profile.pollution_start);
+		// console.log(left);	
+		if (profile.id == profileIdToHighlight){
+			addClass = "timeline__event--active";
+		}
+		retval += `<span 	data-profile="${ profile.id }" 
+							class='timeline__event ${addClass}'
+							style='left:${left}%'>
+					</span>`;
+	})
+
+	retval += `</div>
+				<span>2012</span>
+			</div>`;
+
+	return retval;
 }
 
 CafoMap.prototype.showPollutionProfileByIndex = function(i){
@@ -178,15 +218,17 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	// Fill out the profile content.
 	let profileText = `
+	<div id="${p.id}">
 	<h2>${p.operator}</h2>
 	<p class='profile__address'>${p.county} County</p>
-	${dates}`;
+	${dates}
+	${profilesTimeline(app.profileData, app.x, p.id)}`;
 	profileText = profileText + (p.hasOwnProperty('waterway_affected') ? `<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('pigs') ? `<p><strong>Number of pigs: </strong>${formatNumber(p.pigs)}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('fish_killed') ? `<p><strong>Fish killed: </strong>${formatNumber(p.fish_killed)}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
-	profileContainer.innerHTML = profileText;
+	profileContainer.innerHTML = profileText + "</div>";
 }
 
 CafoMap.prototype.showNextPollutionEvent = function(){

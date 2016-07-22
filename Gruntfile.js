@@ -18,7 +18,9 @@ module.exports = function(grunt) {
     'd3-format', 
     'leaflet',
     'jquery',
-    'lodash/collection'  
+    'lodash/collection',
+    'd3-scale',
+    'd3-array'  
   ];
 
   config.minifyify = {
