@@ -159,15 +159,22 @@ function profilesTimeline(profiles, x, profileIdToHighlight){
 						<div class='timeline'>`;
 
 	profiles.forEach( (profile,i) => {
+
+		// We will want to add a highlight class if this is the event in question
 		let addClass = "";
-		let left =x(profile.pollution_start);
-		// console.log(left);	
+		let width = 0;
+		// Calculate the left position of the circl
+		let left = x(profile.pollution_start);
 		if (profile.id == profileIdToHighlight){
 			addClass = "timeline__event--active";
 		}
+
+		if (profile.pollution_end){
+			width = x(profile.pollution_end) - x(profile.pollution_start);
+		}
 		retval += `<span 	data-profile="${ profile.id }" 
 							class='timeline__event ${addClass}'
-							style='left:${left}%'>
+							style='left:${left}%; width:${ width }%'>
 					</span>`;
 	})
 
