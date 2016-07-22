@@ -70,7 +70,8 @@ var CafoMap = function(options){
 		{
 			center: [39.739190, -89.503629],
 			zoom: 6,
-			scrollWheelZoom:false
+			scrollWheelZoom:false,
+			maxZoom:10
 		}
 	);
 
