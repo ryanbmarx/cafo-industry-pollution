@@ -1,17 +1,18 @@
 var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
-import {format} from 'd3-format'
+import {format} from 'd3-format';
+// var d3 = require('d3-selection');
+
 var choroplethScale = require('./choropleth-scale');
 
 var formatNumber = function(number){
 	//Sometimes the numbers are served up from the spreadsheet as strings. 
 	// Other times, they are actual numbers needing formatting
-	var retval = number;
-	if (typeof(number) == "string"){
-		return retVal;	
+	if (typeof(number) == "number"){
+		return format(",")(number);
 	}
-	return format(",")(number);
+	return number;
 }
 
 var formatExcelDate = function(number){
@@ -114,12 +115,12 @@ var CafoMap = function(options){
 						).on('click', function(e){
 							app.showPollutionProfileByIndex(i);
 						});
-						console.log("Now loading ", pollutionEvent.id)
 						pollutionEvent.marker.profileId = pollutionEvent.id;
 						pollutionEvent.marker.addTo(app.markers);
 				}
 			});
 			app.markers.addTo(map);
+			app.showPollutionProfileByIndex(0);
 		});	
 	});
 }
@@ -137,6 +138,8 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		console.log("Now showing: ",i, app.activeIndex);
 	
 	if (this.activeMarker){
+		this.activeMarker.options.className = "pulse";
+		console.log(this.activeMarker.options.className);
 		this.activeMarker.setStyle(app.stylePollutionEvents())
 	}
 
@@ -147,7 +150,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	*/
 	this.activeMarker = p.marker;
 	this.activeMarker.setStyle(app.styleActivePollutionEvents());
-
 	this.markers.removeLayer(this.activeMarker);
 	this.markers.addLayer(this.activeMarker);
 
