@@ -26,6 +26,9 @@ Other graphics:
 	- Follow the money
 
 - MAYBE: Crowdsource CAFO locations?
+
+// limit zoom on map
+
 */
 
 

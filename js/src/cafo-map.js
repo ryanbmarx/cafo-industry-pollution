@@ -69,13 +69,13 @@ var CafoMap = function(options){
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
 		{
 			center: [39.739190, -89.503629],
-			zoom: 7,
+			zoom: 6,
 			scrollWheelZoom:false
 		}
 	);
 
 	// Add the fricking cool map tiles
-	var layer = new L.StamenTileLayer("terrain");
+	var layer = new L.StamenTileLayer("toner");
 	map.addLayer(layer);
 
 	// Lay the choropleth
@@ -85,7 +85,6 @@ var CafoMap = function(options){
 		app.countyLayer = L.geoJson(data.features, {
 			style: app.styleCounties.bind(app)
 		}).addTo(map);
-		// app.renderLegend(app._propertyToMap);
 
 		// Add pollution profiles to the map.
 		$.getJSON(options.dataRootUrl + "pollution-events.json", function(data){
