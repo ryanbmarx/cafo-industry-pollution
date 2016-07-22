@@ -24,7 +24,7 @@ var formatExcelDate = function(number){
 			year:"numeric"
 		};
 
-		var newDate = new Date((number - (25567 + 1))*86400*1000)
+		var newDate = new Date((number - (25567 + 1))*86400*1000);
 		newDate = newDate.toLocaleDateString("en-us", options);
 		return newDate;
 }
@@ -127,6 +127,11 @@ var CafoMap = function(options){
 				.range([0,100])
 				.domain([xMin, xMax]);
 
+			app.firstDate = formatExcelDate(app.profileData[0].pollution_start).slice(-4);
+			let lastEvent = app.profileData[app.profileData.length - 1];
+			app.lastDate = lastEvent.pollution_end ? formatExcelDate(lastEvent.pollution_end).slice(-4) : formatExcelDate(lastEvent.pollution_start).slice(-4);
+
+
 			app.profileData.forEach( (pollutionEvent,i) => {
 				// The first row of points data actually is labels/descriptions from
 				// spreadsheet. This uses the lat and tests if it is a number. If it is,
@@ -153,9 +158,9 @@ var CafoMap = function(options){
 	});
 }
 
-function profilesTimeline(profiles, x, profileIdToHighlight){
+function profilesTimeline(profiles, x, profileIdToHighlight,firstDate,lastDate){
 	var retval = `<div class='profiles-timeline'>
-						<span>2012</span>
+						<span>${ firstDate }</span>
 						<div class='timeline'>`;
 
 	profiles.forEach( (profile,i) => {
@@ -179,7 +184,7 @@ function profilesTimeline(profiles, x, profileIdToHighlight){
 	})
 
 	retval += `</div>
-				<span>2012</span>
+				<span>${ lastDate }</span>
 			</div>`;
 
 	return retval;
@@ -229,7 +234,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	<h2>${p.operator}</h2>
 	<p class='profile__address'>${p.county} County</p>
 	${dates}
-	${profilesTimeline(app.profileData, app.x, p.id)}`;
+	${profilesTimeline(app.profileData, app.x, p.id, app.firstDate, app.lastDate)}`;
 	profileText = profileText + (p.hasOwnProperty('waterway_affected') ? `<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('pigs') ? `<p><strong>Number of pigs: </strong>${formatNumber(p.pigs)}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('fish_killed') ? `<p><strong>Fish killed: </strong>${formatNumber(p.fish_killed)}</p>` : "");
