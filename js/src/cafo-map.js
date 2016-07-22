@@ -2,7 +2,6 @@ var $ = require('jquery');
 var L = require('leaflet');
 require('./stamen-tiles');
 import {format} from 'd3-format';
-// var d3 = require('d3-selection');
 
 var choroplethScale = require('./choropleth-scale');
 
@@ -64,6 +63,7 @@ var CafoMap = function(options){
 	app.options = options;
 	app._propertyToMap = app.options.propertyToMap;
 	app.activeIndex = -1;
+
 
 	//Make a new map
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
@@ -138,8 +138,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		console.log("Now showing: ",i, app.activeIndex);
 	
 	if (this.activeMarker){
-		this.activeMarker.options.className = "pulse";
-		console.log(this.activeMarker.options.className);
 		this.activeMarker.setStyle(app.stylePollutionEvents())
 	}
 
@@ -150,6 +148,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	*/
 	this.activeMarker = p.marker;
 	this.activeMarker.setStyle(app.styleActivePollutionEvents());
+	console.log(this.activeMarker);
 	this.markers.removeLayer(this.activeMarker);
 	this.markers.addLayer(this.activeMarker);
 

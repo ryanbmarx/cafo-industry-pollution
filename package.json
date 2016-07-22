@@ -16,7 +16,6 @@
   "dependencies": {
     "d3-format": "^1.0.0",
     "d3-scale": "^1.0.1",
-    "d3-selection": "^1.0.0",
     "jquery": "^2.2.2",
     "leaflet": "^0.7.7"
   },

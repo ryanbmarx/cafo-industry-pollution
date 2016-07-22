@@ -16,9 +16,8 @@ module.exports = function(grunt) {
 
   var vendorPackages = [
     'd3-format', 
-    'd3-selection', 
     'leaflet',
-    'jquery'
+    'jquery'  
   ];
 
   config.minifyify = {
