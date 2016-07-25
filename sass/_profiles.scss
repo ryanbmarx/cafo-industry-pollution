@@ -1,0 +1,14 @@
+.profile{
+
+}
+
+.profile__header{
+	@include serif-text(26px);
+	margin-bottom:0;
+}	
+
+.profile__address{
+	@include sans-serif-text(14px);
+	margin:0;
+	font-style:italic;
+}	

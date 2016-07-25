@@ -159,30 +159,37 @@ var CafoMap = function(options){
 }
 
 function profilesTimeline(profiles, x, profileIdToHighlight,firstDate,lastDate){
+
 	var retval = `<div class='profiles-timeline'>
 						<span>${ firstDate }</span>
 						<div class='timeline'>`;
+
 
 	profiles.forEach( (profile,i) => {
 
 		// We will want to add a highlight class if this is the event in question
 		let addClass = "";
 		let width = 0;
-		// Calculate the left position of the circl
-		let left = x(profile.pollution_start);
+
+		// Calculate the left position of the circle
+		var left = x(profile.pollution_start);
+		
 		if (profile.id == profileIdToHighlight){
+			// If this is the circle for the highlighted event, the load up the highlight class
 			addClass = "timeline__event--active";
 		}
 
-		if (profile.pollution_end){
-			width = x(profile.pollution_end) - x(profile.pollution_start);
-		}
+		// If there is an end date, then extend the circle to cover the length of time
+		width = (profile.pollution_end) ? x(profile.pollution_end) - x(profile.pollution_start) : "";
+
+		// Now add the the span/event to the return value
 		retval += `<span 	data-profile="${ profile.id }" 
 							class='timeline__event ${addClass}'
 							style='left:${left}%; width:${ width }%'>
 					</span>`;
-	})
+	});
 
+	// And close up the shop on the timeline.
 	retval += `</div>
 				<span>${ lastDate }</span>
 			</div>`;
@@ -213,12 +220,8 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		Here, we take our active marker, remove it, then redraw it so that it is last and, consequently, on top.
 	*/
 	this.activeMarker = p.marker;
-
 	this.activeMarker.setIcon(app.activePollutionIcon);
-
-	// this.markers.removeLayer(this.activeMarker);
-	// this.markers.addLayer(this.activeMarker);
-
+	
 	let dates = "";
 	if (p.hasOwnProperty('pollution_start')){
 		dates = `<p class='profile__date'><strong>Date: </strong> ${formatExcelDate(p.pollution_start)}`;
@@ -230,10 +233,10 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 
 	// Fill out the profile content.
 	let profileText = `
-	<div id="${p.id}">
-	<h2>${p.operator}</h2>
+	<div id="${p.id}" class="profile">
+	<h2 class='profile__header'>${p.operator}</h2>
 	<p class='profile__address'>${p.county} County</p>
-	${dates}
+	<p>${dates}</p>
 	${profilesTimeline(app.profileData, app.x, p.id, app.firstDate, app.lastDate)}`;
 	profileText = profileText + (p.hasOwnProperty('waterway_affected') ? `<p><strong>Affected waterway: </strong>${p.waterway_affected}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('pigs') ? `<p><strong>Number of pigs: </strong>${formatNumber(p.pigs)}</p>` : "");

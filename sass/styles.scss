@@ -6,6 +6,12 @@
 	font-size:$size;
 }
 
+@mixin serif-text($size){
+	font-family: "Georgia", serif;
+	line-height:1.5em;
+	font-size:$size;
+}
+
 @mixin button(){
 	@include sans-serif-text(10px);
 	color:black;
@@ -60,6 +66,7 @@ $highlight_color:$trib_orange;
 }
 
 @import "legends_and_keys";
+@import "profiles";
 @import 'profile_timeline';
 
 // Map legend
