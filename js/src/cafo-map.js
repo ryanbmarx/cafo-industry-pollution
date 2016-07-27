@@ -72,9 +72,10 @@ var CafoMap = function(options){
 	var map = app.map = L.map(document.getElementById(app.options.mapTargetID),
 		{
 			center: [39.739190, -89.503629],
-			zoom: 6,
+			zoom: 7,
 			scrollWheelZoom:false,
-			maxZoom:10
+			maxZoom:10,
+			maxBounds:latLngBounds([36.590379, -91.133247],[42.478624, -87.015605])
 		}
 	);
 
@@ -153,7 +154,10 @@ var CafoMap = function(options){
 				}
 			});
 			app.markers.addTo(map);
-			app.showPollutionProfileByIndex(0);
+			
+			// Since the pollution profile counter doesn't advance after the last one, 
+			//we need to add 1 to trigger the last/most recent profile
+			app.showPollutionProfileByIndex(counter+1);
 		});	
 	});
 }
@@ -244,6 +248,9 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	profileText = profileText + (p.hasOwnProperty('event_description') ? `<p><strong>What happened: </strong>${p.event_description}</p>` : "");
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText + "</div>";
+
+	console.log(p.marker.getLatLng());
+	app.map.panTo(p.marker.getLatLng());
 }
 
 CafoMap.prototype.showNextPollutionEvent = function(){
