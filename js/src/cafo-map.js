@@ -75,7 +75,7 @@ var CafoMap = function(options){
 			zoom: 7,
 			scrollWheelZoom:false,
 			maxZoom:10,
-			maxBounds:latLngBounds([36.590379, -91.133247],[42.478624, -87.015605])
+			maxBounds:L.latLngBounds(L.latLng(36.590379, -91.133247),L.latLng(42.478624, -87.015605))
 		}
 	);
 
