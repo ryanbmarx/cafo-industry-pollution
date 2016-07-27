@@ -29,6 +29,24 @@ var formatExcelDate = function(number){
 		return newDate;
 }
 
+var dateToApStyle = function (date){
+	
+	var stringDate = String(date)
+		.replace("Jan", "Jan.")
+		.replace("Feb", "Feb.")
+		.replace("Mar", "March")
+		.replace("Apr", "April")
+		.replace("Jun", "June")
+		.replace("Jul", "July")
+		.replace("Aug", "Aug.")
+		.replace("Sep", "Sept.")
+		.replace("Oct", "Oct.")
+		.replace("Nov", "Nov.")
+		.replace("Dec", "Dec.");
+
+	return stringDate;
+}
+
 
 function getScales(counties) {
 	// Counties is the entire geoJSON dataset.
@@ -95,7 +113,6 @@ var CafoMap = function(options){
 		$.getJSON(options.dataRootUrl + "pollution-events.json", function(data){
 			
 			app.profileData = _.sortBy(data, 'pollution_start');
-			console.log(data, app.profileData);
 
 			// This layer group will let me iterate over markers and style them.
 			app.markers = L.layerGroup({
@@ -223,15 +240,13 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		Thus, there were times when the active markers was underneath as many as three other layers and not visible.
 		Here, we take our active marker, remove it, then redraw it so that it is last and, consequently, on top.
 	*/
-	this.activeMarker = p.marker;
-	this.activeMarker.setIcon(app.activePollutionIcon);
-	
+	this.activeMarker = p.marker.setIcon(app.activePollutionIcon);
 	let dates = "";
 	if (p.hasOwnProperty('pollution_start')){
-		dates = `<p class='profile__date'><strong>Date: </strong> ${formatExcelDate(p.pollution_start)}`;
+		dates = `<p class='profile__date'><strong>Date: </strong> ${dateToApStyle(formatExcelDate(p.pollution_start))}`;
 
 		if (p.hasOwnProperty('pollution_end')){
-			dates = dates + ` - ${formatExcelDate(p.pollution_end)}`;
+			dates = dates + ` - ${dateToApStyle(formatExcelDate(p.pollution_end))}`;
 		}
 	}
 
@@ -249,7 +264,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	profileText = profileText + (p.hasOwnProperty('event_outcome') ? `<p><strong>Outcome: </strong>${p.event_outcome}</p>` : "");
 	profileContainer.innerHTML = profileText + "</div>";
 
-	console.log(p.marker.getLatLng());
 	app.map.panTo(p.marker.getLatLng());
 }
 
