@@ -183,67 +183,6 @@ $profile_marker_dimension:20px;
 }
 
 // ##############
-// CHART
-// ##############
-#pig-chart-container{
-
-}
-
-.pigchart{
-	position: relative;
-}
-
-.trb_mainContent .chart-annotation {
-	padding: 10px;
-	background: #eee;
-	// border: 1px solid #eee;
-	width: 280px;
-	position: absolute;
-	transition: all 300ms;
-	p{
-		font-size: 25px;
-		line-height: 1.3em;
-		font-style: italic;
-		margin:0;	
-	}
-}
-
-.bar{
-	&--big{
-		fill:$trib_blue;
-	}
-	&--rest{
-		fill:$trib_light_blue;
-	}
-}
-
-.bar-label{
-	&--big, &--rest{
-		@include sans-serif-text(11px);
-		font-weight:bold;
-		text-align:center;
-	}
-}
-
-.axis{
-	@include sans-serif-text(10px);
-
-	&.x{
-		font-weight: bold;
-	}
-}
-
-.changeline{
-	&--rest{
-		stroke:red;
-		fill:none;
-	}
-	&--big{
-		stroke:yellow;
-		fill:none;
-	}
-}
-// ##############
 // BUTTONS/UI
 // ##############
 
@@ -294,7 +233,7 @@ $profile_marker_dimension:20px;
 
 
 .label{
-	@include sans-serif-text(14px);
+	@include sans-serif-text(16px);
 	font-weight:bold;
 }
 
