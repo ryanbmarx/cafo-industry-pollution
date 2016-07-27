@@ -8,7 +8,7 @@
 
 @mixin serif-text($size){
 	font-family: "Georgia", serif;
-	line-height:1.5em;
+	line-height:1.3em;
 	font-size:$size;
 }
 
@@ -319,7 +319,7 @@ $profile_marker_dimension:20px;
 	}
 }
 
-.trb_mainContent .credits{
+.trb_mainContent .credits p{
 	@include sans-serif-text(12px);
 }
 
