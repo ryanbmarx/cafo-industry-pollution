@@ -60,7 +60,7 @@ function getScales(counties) {
 	"hogs_data_DOLLARS_12",
 	"hogs_data_FERT_ACRES",
 	"hogs_data_MANURE_ACRES",
-	"hogs_data_CORN_ACREA",
+	"hogs_data_CORN_ACRES",
 	"hogs_data_CORN_BUSHELS",
 	"hogs_data_WORKERS"
 	];
@@ -93,7 +93,7 @@ var CafoMap = function(options){
 			zoom: 7,
 			scrollWheelZoom:false,
 			maxZoom:10,
-			maxBounds:L.latLngBounds(L.latLng(36.590379, -91.133247),L.latLng(42.478624, -87.015605))
+			maxBounds:L.latLngBounds(L.latLng(36.590379, -92.133247),L.latLng(42.478624, -87.015605))
 		}
 	);
 
@@ -181,6 +181,11 @@ var CafoMap = function(options){
 
 function profilesTimeline(profiles, x, profileIdToHighlight,firstDate,lastDate){
 
+	/*
+		Uses D3 to draw a little timeline of all pollution profiles. 
+
+	*/
+
 	var retval = `<div class='profiles-timeline'>
 						<span>${ firstDate }</span>
 						<div class='timeline'>`;
@@ -235,11 +240,6 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 		this.activeMarker.setIcon(app.pollutionIcon);
 	}
 
-	/*
-		There are a few instances of one set of coordinates having a series of events associated with it.
-		Thus, there were times when the active markers was underneath as many as three other layers and not visible.
-		Here, we take our active marker, remove it, then redraw it so that it is last and, consequently, on top.
-	*/
 	this.activeMarker = p.marker.setIcon(app.activePollutionIcon);
 	let dates = "";
 	if (p.hasOwnProperty('pollution_start')){
@@ -302,36 +302,36 @@ CafoMap.prototype.styleCounties = function(feature){
 	};
 }
 
-CafoMap.prototype.stylePollutionEvents = function(feature){
-	var app = this;
-	let options = app.options.profileOptions;
-	// TODO: Figure out why the danged circles are yellow.
-	return {
-		weight: options.strokeWidth,
-		opacity: options.fillOpacity,
-		color: options.strokeColor,
-		fillColor: options.fillColor,
-		fillOpacity: options.fillOpacity,
-		className:'profile-marker--inactive',
-		radius:options.radius
-	};
-}
+// CafoMap.prototype.stylePollutionEvents = function(feature){
+// 	var app = this;
+// 	let options = app.options.profileOptions;
+// 	// TODO: Figure out why the danged circles are yellow.
+// 	return {
+// 		weight: options.strokeWidth,
+// 		opacity: options.fillOpacity,
+// 		color: options.strokeColor,
+// 		fillColor: options.fillColor,
+// 		fillOpacity: options.fillOpacity,
+// 		className:'profile-marker--inactive',
+// 		radius:options.radius
+// 	};
+// }
 
 
-CafoMap.prototype.styleActivePollutionEvents = function(feature){
-	var app = this;
-	let options = app.options.profileOptions;
+// CafoMap.prototype.styleActivePollutionEvents = function(feature){
+// 	var app = this;
+// 	let options = app.options.profileOptions;
 
-	return {
-		weight: options.active.strokeWidth,
-		opacity: options.active.fillOpacity,
-		color: options.strokeColor,
-		fillColor: options.active.fillColor,
-		fillOpacity: 1,
-		className:'profile-marker--active',
-		radius:options.radius
-	};
-}
+// 	return {
+// 		weight: options.active.strokeWidth,
+// 		opacity: options.active.fillOpacity,
+// 		color: options.strokeColor,
+// 		fillColor: options.active.fillColor,
+// 		fillOpacity: 1,
+// 		className:'profile-marker--active',
+// 		radius:options.radius
+// 	};
+// }
 
 CafoMap.prototype.updateMapData = function(property){
 	// This method is to be used when switching data sets for the chorpleth
@@ -343,6 +343,32 @@ CafoMap.prototype.updateMapData = function(property){
 	// app.renderLegend(app._propertyToMap);
 }
 
+CafoMap.prototype.trackButtonClick = function(buttonProfileClick){
 
+	// The analytics thingy
+	console.log('Tracking click', buttonProfileClick);
+	var linkName = 'cafo-pollution-map';
 
-	module.exports = CafoMap;
+	if (window.s) {
+		s.linkTrackVars = "server,prop3,prop20,prop28,prop33,prop34,prop57,eVar3,eVar20,eVar21,eVar34,eVar35,eVar36,eVar37,eVar38,eVar39,eVar51";
+		s.linkTrackEvents = "";
+		s.prop3 = buttonChartData;
+		s.eVar3 = buttonChartData;
+		s.prop57 = linkName;
+		s.tl(
+        // Since we're not actually tracking a link click, use
+        // true instead of `this`.  This also supresses a
+        // delay
+        true,
+        // linkType
+        // 'o' for custom link
+        'o',
+        // linkName
+        linkName,
+        // variableOverrides
+        null
+        );
+	}
+}
+
+module.exports = CafoMap;

@@ -5,6 +5,10 @@ var CafoProfileButtons = function(options){
 	forEach.call(options.buttons, button => {
 		button.addEventListener('click', function(e){
 			e.preventDefault();
+
+			// Send that category to the analytics method of the map class
+			options.map.trackButtonClick("One profile navigated");
+
 			// update choropleth map base on selected button/data- attribute
 			if(this.dataset.direction == "next"){
 				options.map.showNextPollutionEvent();
