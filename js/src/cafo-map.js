@@ -115,9 +115,7 @@ var CafoMap = function(options){
 			app.profileData = _.sortBy(data, 'pollution_start');
 
 			// This layer group will let me iterate over markers and style them.
-			app.markers = L.layerGroup({
-				// https://github.com/Leaflet/Leaflet.markercluster#options
-			});
+			app.markers = L.layerGroup({});
 			var counter = 0;
 
 			var markerLookup = {}
@@ -145,6 +143,7 @@ var CafoMap = function(options){
 				.range([0,100])
 				.domain([xMin, xMax]);
 
+			// Here we pluck the years from the first and last pollution events to label the mini timelines
 			app.firstDate = formatExcelDate(app.profileData[0].pollution_start).slice(-4);
 			let lastEvent = app.profileData[app.profileData.length - 1];
 			app.lastDate = lastEvent.pollution_end ? formatExcelDate(lastEvent.pollution_end).slice(-4) : formatExcelDate(lastEvent.pollution_start).slice(-4);
@@ -158,6 +157,7 @@ var CafoMap = function(options){
 				// the JSON. Don't publish except when it's true.
 				if (pollutionEvent.publish == 1){
 					counter++;
+
 					// if key does not exist, make new marker. Otherwise
 					pollutionEvent.marker = L.marker(
 						{lat:parseFloat(pollutionEvent.lat), 
@@ -189,8 +189,7 @@ function profilesTimeline(profiles, x, profileIdToHighlight,firstDate,lastDate){
 	var retval = `<div class='profiles-timeline'>
 						<span>${ firstDate }</span>
 						<div class='timeline'>`;
-
-
+						
 	profiles.forEach( (profile,i) => {
 
 		// We will want to add a highlight class if this is the event in question
@@ -302,37 +301,6 @@ CafoMap.prototype.styleCounties = function(feature){
 	};
 }
 
-// CafoMap.prototype.stylePollutionEvents = function(feature){
-// 	var app = this;
-// 	let options = app.options.profileOptions;
-// 	// TODO: Figure out why the danged circles are yellow.
-// 	return {
-// 		weight: options.strokeWidth,
-// 		opacity: options.fillOpacity,
-// 		color: options.strokeColor,
-// 		fillColor: options.fillColor,
-// 		fillOpacity: options.fillOpacity,
-// 		className:'profile-marker--inactive',
-// 		radius:options.radius
-// 	};
-// }
-
-
-// CafoMap.prototype.styleActivePollutionEvents = function(feature){
-// 	var app = this;
-// 	let options = app.options.profileOptions;
-
-// 	return {
-// 		weight: options.active.strokeWidth,
-// 		opacity: options.active.fillOpacity,
-// 		color: options.strokeColor,
-// 		fillColor: options.active.fillColor,
-// 		fillOpacity: 1,
-// 		className:'profile-marker--active',
-// 		radius:options.radius
-// 	};
-// }
-
 CafoMap.prototype.updateMapData = function(property){
 	// This method is to be used when switching data sets for the chorpleth
 	var app = this;
@@ -340,7 +308,6 @@ CafoMap.prototype.updateMapData = function(property){
 	app.countyLayer.eachLayer(function(layer){
 		app.countyLayer.resetStyle(layer);
 	});
-	// app.renderLegend(app._propertyToMap);
 }
 
 CafoMap.prototype.trackButtonClick = function(buttonProfileClick){
