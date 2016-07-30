@@ -2,6 +2,21 @@
 
 A [Tarbell](http://tarbell.io) project that publishes to a P2P HTML Story.
 
+ABOUT
+-----
+
+This is a tarbell map project which uses a leaflet map to display data about pigs and pollution in Illinois. It uses a custom class to power a leaflet map (with a tiny little d3 timeline).
+
+PIGS: The GEOJSON file in /data powers the shaded county map. It contains ~8 different data sets, but that was whittled by editors down to 5. The shaded counties are used as a way to illustrate hog density in Illinois. All that is needed is to know more red = more pigs.
+
+POLLUTION: The dots on the map represent individual pollution events. The data is pulled from the Google spreadsheet by a Python function and deposited in an external JSON file (see the tarbell config). Each event has an associated collection of meta data (known as a "profile"). 
+
+PROMO BLURB
+-----------
+
+The promo blurb is published in the `tarbell publish production` command, per [the docs](http://docs.tribapps.com/tarbell/blurbs.html)
+
+
 Assumptions
 -----------
 
