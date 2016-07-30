@@ -1,0 +1,25 @@
+{# Override the `container` block to disable default layout. #}
+{% block container %}
+{% block content %}
+XXXXXXX
+{% endblock content %}
+{% endblock container %}
+
+
+{% block scripts %}
+<script>
+	(function(window, document) {
+		var CSS = [
+		"//{{ ROOT_URL }}/css/styles.css"
+		];    
+		CSS.forEach(function(url) {
+			var link = document.createElement('link');
+			link.setAttribute('rel', 'stylesheet');
+			link.setAttribute('href', url);
+			document.head.appendChild(link);
+		});
+	};
+
+})(window, document);    
+</script>
+{% endblock scripts %}
