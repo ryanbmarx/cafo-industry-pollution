@@ -1,17 +1,187 @@
 # -*- coding: utf-8 -*-
+# SPREADSHEET_KEY = "1XBlAN9Kcfogf5NgiPZhmr8f63uKZS_zmfyHQYCW_b68"
 
 """
 Tarbell project configuration
 """
 
-from flask import Blueprint, g
-from tarbell.hooks import register_hook
+import functools
+  
+from clint.textui import colored
+from flask import Blueprint, g, render_template
+import ftfy
+import jinja2
 import json
+from markdown import markdown
+import p2p
+from simplejson.scanner import JSONDecodeError
+from tarbell.utils import puts
+
+from tarbell.hooks import register_hook
 
 import datetime
 
-
 blueprint = Blueprint('cafo_pollution', __name__)
+
+# Custom routes
+@blueprint.route('/blurbs/<p2p_slug>.html')
+def preview_blurb(p2p_slug):
+        site = g.current_site
+        context = site.get_context()
+  
+        blurb = next(b for b in context['blurbs'] if b['p2p_slug'] == p2p_slug)
+        return render_template(blurb['template'], blurb=blurb, **context)
+  
+def is_production_bucket(bucket_url, buckets):
+    for name, url in buckets.items():
+        if url == bucket_url and name == 'production':
+            return True
+    return False
+  
+def render_site_template(template_name, site, **extra_context):
+    template = site.app.jinja_env.get_template(template_name)
+    context = site.get_context(publish=True)
+    context.update(extra_context)
+    rendered = template.render(**context)
+  
+    if u'“' in rendered or u'”' in rendered:
+        # HACK: Work around P2P API's weird handling of curly quotes where it
+        # converts the first set to HTML entities and converts the rest to
+        # upside down quotes
+        msg = ("Removing curly quotes because it appears that the P2P API does "
+               "not handle them correctly.")
+        puts("\n" + colored.red(msg))
+        rendered = ftfy.fix_text(rendered, uncurl_quotes=True)
+  
+    return rendered
+  
+def p2p_publish_blurb(site, s3):
+    """Render each template in the `blurbs` worksheet and publish to P2P"""
+  
+    if not is_production_bucket(s3.bucket, site.project.S3_BUCKETS):
+        puts(colored.red(
+            "\nNot publishing to production bucket. Skipping P2P publiction."))
+        return
+  
+    context = site.get_context(publish=True)
+  
+    p2p_conn = p2p.get_connection()
+  
+    for blurb in context['blurbs']:
+        extra_context = {
+            'blurb': blurb,
+        }
+  
+  
+        content = render_site_template(blurb['template'], site, **extra_context)
+  
+        content_item = {
+            'slug': blurb['p2p_slug'],
+            'content_item_type_code': 'blurb',
+            'title': blurb['title'],
+            'body': content,
+            'seo_keyphrase': blurb['keywords'],
+        }
+        try:
+            created, response = p2p_conn.create_or_update_content_item(content_item)
+            if created:
+                # If we just created the item, set its state to 'working'
+                p2p_conn.update_content_item({
+                    'slug': blurb['p2p_slug'],
+                    'content_item_state_code': 'working',
+                })
+        except JSONDecodeError:
+            # HACK: Something is borked with either python-p2p or the P2P content services
+            # API itself. It's ok to ignore this error
+            print('JSONDecodeError!')
+  
+        puts("\n" + colored.green("Published to P2P with slug {}".format(blurb['p2p_slug'])))
+  
+def _get_published_content(site, s3):
+    template = site.app.jinja_env.get_template('_htmlstory.html')
+    context = site.get_context(publish=True)
+
+    rendered = template.render(**context)
+  
+    if u'“' in rendered or u'”' in rendered:
+        # HACK: Work around P2P API's weird handling of curly quotes where it
+        # converts the first set to HTML entities and converts the rest to
+        # upside down quotes
+        msg = ("Removing curly quotes because it appears that the P2P API does "
+               "not handle them correctly.")
+        puts("\n" + colored.red(msg))
+        rendered = ftfy.fix_text(rendered, uncurl_quotes=True)
+  
+    return rendered
+  
+def p2p_publish_htmlstory(site, s3):
+    if not is_production_bucket(s3.bucket, site.project.S3_BUCKETS):
+        puts(colored.red(
+            "\nNot publishing to production bucket. Skipping P2P publiction."))
+        return
+  
+    content = _get_published_content(site, s3)
+    context = site.get_context(publish=True)
+  
+    try:
+        p2p_slug = context['p2p_slug']
+    except KeyError:
+        puts("No p2p_slug defined in the spreadsheet or DEFAULT_CONTEXT. "
+             "Skipping P2P publication.")
+        return
+  
+    try:
+        title = context['headline']
+    except KeyError:
+        title = context['title']
+    p2p_conn = p2p.get_connection()
+    content_item = {
+        'slug': p2p_slug,
+        'content_item_type_code': 'htmlstory',
+        'title': title,
+        'body': content,
+        'seotitle': context['seotitle'],
+        'seodescription': context['seodescription'],
+        'seo_keyphrase': context['keywords'],
+        'byline': context['byline'],
+        'custom_param_data': {
+            'story-summary': markdown(context['story_summary']),
+        },
+    }
+  
+    created = False
+    try:
+        created, response = p2p_conn.create_or_update_content_item(content_item)
+    except JSONDecodeError:
+        # HACK: Something is borked with either python-p2p or the P2P content services
+        # API itself. It's ok to ignore this error
+        print('JSONDecodeError!')
+  
+    if created:
+        try:
+            # If we just created the item, set its state to 'working'
+            p2p_conn.update_content_item({
+                'slug': p2p_slug,
+                'content_item_state_code': 'working',
+                'kicker_id': 'Data',
+            })
+        except JSONDecodeError:
+            # HACK: Something is borked with either python-p2p or the P2P content services
+            # API itself. It's ok to ignore this error
+            print('JSONDecodeError!')
+  
+    puts("\n" + colored.green("Published to P2P with slug {}".format(p2p_slug)))
+  
+def p2p_publish_blurb_and_htmlstory(site, s3):
+    p2p_publish_htmlstory(site, s3)
+    p2p_publish_blurb(site, s3)
+  
+P2P_PUBLISH_HOOK = p2p_publish_blurb_and_htmlstory
+
+
+######################
+#BEGIN PROJECT THINGYS
+######################
 
 def has_coordinates(event):
     return ('lat' in event and event['lat'] and 
