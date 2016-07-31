@@ -35,7 +35,6 @@
 {% endblock container %}
 
 {% block library_scripts %}
-<script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
 <script src="//{{ ROOT_URL }}/js/vendor.min.js"></script>
 {% endblock %}
 
@@ -73,34 +72,13 @@
     mapTargetID:"map",
     dataRootUrl: "//{{ ROOT_URL }}/data/",
     propertyToMap:"hogs_data_FARM_1000",
-    legendContainer:document.getElementById('legend-container'),
     dataLabelLookup:dataLabels,
     countyOptions:{
       fillColor:"#FF0000",
     },
     profileOptions: {
-      /* Dot styles here */
-      strokeWidth:1,
-      strokeColor:'black',
-      fill:true,
-      fillColor: '#000000',
-      fillOpacity: .4,
-      radius:5,
-      label:"One pollution event",
       profileContainer:document.getElementById('profile-container'),
-      active:{
-        /* Styles on click */
-        fillColor: '#ffff00',
-        strokeWidth:2,
-        fillOpacity: 1
-      },
-      hover:{
-        /* Styles on click */
-        fillColor: '#800',
-        strokeWidth:1
-      }
-
-    }
+        }
   });
 
 
@@ -110,6 +88,7 @@
     map:map
   });
 
+  /* The toggle buttons for the profiles */
   var profileButtons = new CafoMap.CafoProfileButtons({
     buttons:document.getElementsByClassName('profile-button'),
     map:map
