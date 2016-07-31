@@ -54,48 +54,36 @@
     });
 
   
-
-  var dataLabels = {
-    {% for row in map_buttons %}
-    hogs_data_{{ row.data_att }}: {
-      primary: "{{ row.label }}",
-      secondary:"{{ row.secondary_label }}",
-      type:"{{ row.data_type }}"
-    }{% if not loop.last %}, {% endif %}
-    {% endfor %}
-  };
-
   window.onload = function(){
 
-  /* Build the actual map here */
-  var map = new CafoMap.CafoMap({
-    mapTargetID:"map",
-    dataRootUrl: "//{{ ROOT_URL }}/data/",
-    propertyToMap:"hogs_data_FARM_1000",
-    dataLabelLookup:dataLabels,
-    countyOptions:{
-      fillColor:"#FF0000",
-    },
-    profileOptions: {
-      profileContainer:document.getElementById('profile-container'),
-        }
-  });
+    /* Build the actual map here */
+    var map = new CafoMap.CafoMap({
+      mapTargetID:"map",
+      dataRootUrl: "//{{ ROOT_URL }}/data/",
+      propertyToMap:"hogs_data_FARM_1000",
+      countyOptions:{
+        fillColor:"#FF0000",
+      },
+      profileOptions: {
+        profileContainer:document.getElementById('profile-container'),
+          }
+    });
 
 
-  /* Build the <select> here */
-  var mapSelect = new CafoMap.CafoMapSelect({
-    menu:document.getElementsByClassName('map-select'),
-    map:map
-  });
+    /* Build the <select> here */
+    var mapSelect = new CafoMap.CafoMapSelect({
+      menu:document.getElementsByClassName('map-select'),
+      map:map
+    });
 
-  /* The toggle buttons for the profiles */
-  var profileButtons = new CafoMap.CafoProfileButtons({
-    buttons:document.getElementsByClassName('profile-button'),
-    map:map
-  });
+    /* The toggle buttons for the profiles */
+    var profileButtons = new CafoMap.CafoProfileButtons({
+      buttons:document.getElementsByClassName('profile-button'),
+      map:map
+    });
 
 
-};
+  };
 
 })(window, document);    
 </script>
