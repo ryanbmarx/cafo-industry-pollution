@@ -6,7 +6,7 @@ var CafoProfileButtons = function(options){
 		button.addEventListener('click', function(e){
 			e.preventDefault();
 
-			// Send that category to the analytics method of the map class
+			// Send word to the analytics method of the map class that a new profile has been selected.
 			options.map.trackButtonClick("One profile navigated");
 
 			// update choropleth map base on selected button/data- attribute

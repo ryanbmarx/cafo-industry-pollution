@@ -232,7 +232,7 @@ CafoMap.prototype.showPollutionProfileByIndex = function(i){
 	// down to just the one we want, storing it in variable "p"
 	let p = app.profileData[app.activeIndex];
 	
-		console.log("Now showing: ",i, app.activeIndex);
+	// console.log("Now showing: ",i, app.activeIndex);
 	
 	// Start by removing any existing active marker
 	if (this.activeMarker){
@@ -313,14 +313,14 @@ CafoMap.prototype.updateMapData = function(property){
 CafoMap.prototype.trackButtonClick = function(buttonProfileClick){
 
 	// The analytics thingy
-	console.log('Tracking click', buttonProfileClick);
+	// console.log('Tracking click', buttonProfileClick);
 	var linkName = 'cafo-pollution-map';
 
 	if (window.s) {
 		s.linkTrackVars = "server,prop3,prop20,prop28,prop33,prop34,prop57,eVar3,eVar20,eVar21,eVar34,eVar35,eVar36,eVar37,eVar38,eVar39,eVar51";
 		s.linkTrackEvents = "";
-		s.prop3 = buttonChartData;
-		s.eVar3 = buttonChartData;
+		s.prop3 = buttonProfileClick;
+		s.eVar3 = buttonProfileClick;
 		s.prop57 = linkName;
 		s.tl(
         // Since we're not actually tracking a link click, use
