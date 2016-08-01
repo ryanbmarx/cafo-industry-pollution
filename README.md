@@ -14,7 +14,37 @@ POLLUTION: The dots on the map represent individual pollution events. The data i
 PROMO BLURB
 -----------
 
-The promo blurb is published in the `tarbell publish production` command, per [the docs](http://docs.tribapps.com/tarbell/blurbs.html)
+There is an embeddable p2p promo blurb. It has a nifty gif. It's cool.
+
+PUBLISHING
+----------
+
+The graphic is published using the normal tarbell command, and the blurb is published using a seperate script (the same as the industry charts). Both commands can be executed with the npm command `npm run publish`
+
+MICKEY MOUSE
+------------
+
+                    .d88888888bo.
+                  .d8888888888888b.
+                  8888888888888888b
+                  888888888888888888
+                  888888888888888888
+                   Y8888888888888888
+             ,od888888888888888888P
+          .'`Y8P'```'Y8888888888P'
+        .'_   `  _     'Y88888888b
+       /  _`    _ `      Y88888888b   ____
+    _  | /  \  /  \      8888888888.d888888b.
+   d8b | | /|  | /|      8888888888d8888888888b
+  8888_\ \_|/  \_|/      d888888888888888888888b
+  .Y8P  `'-.            d88888888888888888888888
+ /          `          `      `Y8888888888888888
+ |                        __    888888888888888P
+  \                       / `   dPY8888888888P'
+   '._                  .'     .'  `Y888888P`
+      `"'-.,__    ___.-'    .-'
+          `-._````  __..--'`
+              ``````
 
 
 Assumptions
