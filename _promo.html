@@ -1,25 +1,56 @@
 {# Override the `container` block to disable default layout. #}
 {% block container %}
 {% block content %}
-XXXXXXX
+<style>
+	.promo{
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		align-items: center;
+		height:0;
+		width:100%;
+		padding-bottom:56.25%;
+		background: url(http://{{ ROOT_URL }}/img/map.gif) center center no-repeat;
+	    background-size: cover;
+		margin: auto;
+		max-width: 650px;
+		max-height:366px;
+		text-decoration: none;
+		text-align:center;
+		cursor: pointer;
+	}
+
+	.button{
+		margin: 0 auto;
+		padding: 15px 10px;
+		background: rgba(0,0,0,.50);
+		color:white;
+		text-transform: none;
+		text-decoration: none;
+		font-size:14px;
+		font-family: "Arial", sans-serif;
+		display: inline-block;
+	}
+
+	.promo:hover .button{
+		background: rgba(0,0,0,.9);	
+	}
+
+	h1{
+		font-family: "Georgia", serif;
+	    background: rgba(0,0,0,.5);
+	    padding: 10px 0;
+	    color: white;
+        width: 100%;
+	}
+
+</style>
+
+<a href="{{ promo_url }}" class='promo'>
+	<h1>{{ promo_headline|process_text }}</h1>
+	<span class='button'>{{ promo_button|process_text }}</span>
+</a>
+
 {% endblock content %}
 {% endblock container %}
 
-
-{% block scripts %}
-<script>
-	(function(window, document) {
-		var CSS = [
-		"//{{ ROOT_URL }}/css/styles.css"
-		];    
-		CSS.forEach(function(url) {
-			var link = document.createElement('link');
-			link.setAttribute('rel', 'stylesheet');
-			link.setAttribute('href', url);
-			document.head.appendChild(link);
-		});
-	};
-
-})(window, document);    
-</script>
-{% endblock scripts %}

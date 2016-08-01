@@ -219,7 +219,7 @@ def xldate_to_datetime(xldate):
 SPREADSHEET_KEY = "1XBlAN9Kcfogf5NgiPZhmr8f63uKZS_zmfyHQYCW_b68"
 
 # Exclude these files from publication
-EXCLUDES = ['*.md', 'requirements.txt', 'node_modules', 'sass', 'js/src', 'package.json', 'Gruntfile.js']
+EXCLUDES = ['*.md', 'promo','requirements.txt', 'node_modules', 'sass', 'js/src', 'package.json', 'Gruntfile.js']
 
 # Spreadsheet cache lifetime in seconds. (Default: 4)
 # SPREADSHEET_CACHE_TTL = 4
